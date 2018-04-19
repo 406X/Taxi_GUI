@@ -1,5 +1,6 @@
 package taxi_gui;
 
+import java.util.Arrays;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,16 +34,19 @@ public class Main extends Application {
 	private int maxPassenger = 10;
 	private int[][][] list = new int[maxPassenger][3][2];
 	private int[][] Taxi = new int[maxTaxi][2];
+	private int[][] blockWeight = new int[boxes][boxes];
 	
+			
 	Color[] colorPassenger = new Color[10];
 	mainCanvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc_box = canvas.getGraphicsContext2D();
 	GraphicsContext gc_blocks = canvas.getGraphicsContext2D();
 	int box_lineWidth = 4;
 	GraphicsContext gc_taxi = canvas.getGraphicsContext2D();
-	
+	GraphicsContext gc_weight = canvas.getGraphicsContext2D();
 	@Override
 	public void start(Stage primaryStage) {
+		//GUI
 		primaryStage.setTitle("Taxii Simulator!");
 		
 		Group root = new Group();
@@ -95,6 +99,16 @@ public class Main extends Application {
 		Text t_dst = new defaultText("Destination:",x_srcx+240,y_srcx-35);
 		root.getChildren().add(t_dst);
 		
+		//Button
+		Button addPassenger = new Button("Add Passenger");
+		addPassenger.setTranslateX(winWidth/2*0.72);
+		addPassenger.setTranslateY(y_srcx+20);
+		root.getChildren().add(addPassenger);
+		
+		//Init Variables
+		for(int count = 0 ; count< boxes ;count++)
+			Arrays.fill(blockWeight[count], 1);
+		
 		//Test Variables
 		numPassenger=2;
 		list[0][0][0]=1;
@@ -117,6 +131,7 @@ public class Main extends Application {
 		
 		drawBoxes();
 		drawBlocks();
+		drawWeight();
 		drawTaxi();
 		primaryStage.show();
 	}//End of start
@@ -156,6 +171,17 @@ public class Main extends Application {
 		}
 	}
 	
+	public void drawWeight(){
+		gc_weight.setFont(new Font("Verdana", 14));
+		gc_weight.setLineWidth(1);
+		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
+			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
+				gc_weight.strokeText( String.valueOf(blockWeight[count2][count]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
+			}
+		}
+	
+	}
+
 	public double convertX(int blockX,int blockY,int[][] countBlock){
 		blockX--;
 		blockY--;
