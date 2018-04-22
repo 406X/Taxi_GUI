@@ -54,6 +54,9 @@ public class Taxi {
 			Arrays.fill( taxiPassenger[count], -1);
 		
 		passenger = new int[this.maxPassenger][3][2];
+		
+		for(int count = 0 ; count< boxes ;count++)
+			Arrays.fill(blockWeight[count], 1);
 	}
 	
 	
@@ -195,13 +198,24 @@ public class Taxi {
 		return numPassenger;
 	}
 	
+	public int[][] getBlockWeight(){
+		return blockWeight;
+	}
+	
+	public void setBlockWeight(int x , int y , int weight){
+		blockWeight[y][x] = weight;
+	}
 	
 	public int[] moveTaxi( int[] src , int[] dest, int taxiIndex){
 		int[] movement = new int[2];
 		
 		//Movement Algo goes here
-		if(blockWeight[ src[1] ][ src[0]] >1 && taxiWeight[taxiIndex] < blockWeight[ src[1] ][ src[0]])
+		if(blockWeight[ src[1] - 1][ src[0] - 1 ] >1 && taxiWeight[taxiIndex] < blockWeight[ src[1] - 1][ src[0] - 1] ){
+			taxiWeight[taxiIndex]++;
 			return movement;
+		}
+		
+		taxiWeight[taxiIndex]=0;
 		
 		int x_diff = dest[0] - src[0];
 		int y_diff = dest[1] - src[1];

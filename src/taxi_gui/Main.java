@@ -114,20 +114,10 @@ public class Main extends Application {
 		addPassenger.setTranslateY(y_srcx+20);
 		root.getChildren().add(addPassenger);
 		
-		
-		
-		
-		
-	
-		
-		
-		//Init Variables
-		for(int count = 0 ; count< boxes ;count++)
-			Arrays.fill(blockWeight[count], 1);
+		Taxii.setBlockWeight( 0, 0, 3);
+		blockWeight = Taxii.getBlockWeight();
 		
 		//Test Variables
-		
-
 		addPassenger(2,2,4,4);
 		addPassenger(8,8,3,3);
 		addTaxi();
@@ -140,22 +130,22 @@ public class Main extends Application {
 		drawBlocks();
 		drawTaxi();
 		drawWeight();
-
+		
 		Timeline timeline = new Timeline(
-			 new KeyFrame(Duration.seconds(1), e -> {
-			 gc.setFill( Color.WHITE);
-				gc.fillRect(0, 0, canvasWidth, canvasHeight);
-				Taxii.move();
-				numPassenger = Taxii.getNumPassenger();
-				list = Taxii.getPassengerCoords();
-				Taxi = Taxii.getTaxiCoords();
-				drawBoxes();
-				drawBlocks();
-				drawTaxi();
-				drawWeight();
-				time+=1;
-				primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" seconds");
-			})
+				new KeyFrame(Duration.seconds(1), e -> {
+					gc.setFill( Color.WHITE);
+					gc.fillRect(0, 0, canvasWidth, canvasHeight);
+					Taxii.move();
+					numPassenger = Taxii.getNumPassenger();
+					list = Taxii.getPassengerCoords();
+					Taxi = Taxii.getTaxiCoords();
+					drawBoxes();
+					drawBlocks();
+					drawTaxi();
+					drawWeight();
+					time+=1;
+					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" seconds");
+				})
 		);
 		timeline.setCycleCount(INDEFINITE);
 		
