@@ -30,12 +30,11 @@ public class Main extends Application {
 	private int boxes = 8;
 	private int maxTaxi = 1;
 	private int maxPassenger = 10;
-	
+	private int winWidth = 450; //Default: 450
+	private int winHeight = 800; //Default: 800
 	
 	//Do not change
 	//-------------------------------------------------------
-	private int winWidth = 450;
-	private int winHeight = 800;
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
 	private int maxBlocks =4;
@@ -74,51 +73,49 @@ public class Main extends Application {
 		primaryStage.setResizable(false);
 		
 		root.getChildren().add(canvas);
-		canvas.setTranslateX(20);
-		canvas.setTranslateY(25);
+		canvas.setTranslateX( winWidth * (20.0/450) );
+		canvas.setTranslateY( winHeight * (25.0/800) );
 		
 		//Texts and Textboxes
-		int x_srcx = 15;
-		int y_srcx = 520;
 		int tf_width = 40;
-		TextField tf_srcx = new NumberTextField(x_srcx+25,y_srcx-20);
+		TextField tf_srcx = new NumberTextField( (int) ( winWidth * (15+25)/450.0 ),(int) ( winHeight * (520-20.0)/800 ) );
 		tf_srcx.setMaxWidth(tf_width );
 		root.getChildren().add(tf_srcx);
 		
-		TextField tf_srcy = new NumberTextField(x_srcx+110,y_srcx-20);
+		TextField tf_srcy = new NumberTextField( (int) ( winWidth * (15+110.0)/450 ), (int)( winHeight * (520-20.0)/800 ) );
 		tf_srcy.setMaxWidth(tf_width );
 		root.getChildren().add(tf_srcy);
 		
-		Text t_srcx = new defaultText("X",x_srcx,y_srcx);
+		Text t_srcx = new defaultText("X",winWidth * (15.0/450) ,winHeight * (520.0/800));
 		root.getChildren().add(t_srcx);
 		
-		Text t_srcy = new defaultText("Y",x_srcx+85,y_srcx);
+		Text t_srcy = new defaultText("Y",winWidth * (15+85.0)/450,winHeight * (520.0/800));
 		root.getChildren().add(t_srcy);
 		
-		Text t_dstx = new defaultText("X",x_srcx+240,y_srcx);
+		Text t_dstx = new defaultText("X",winWidth * (15+240.0)/450,winHeight * (520.0/800));
 		root.getChildren().add(t_dstx);
 		
-		Text t_dsty = new defaultText("Y",x_srcx+325,y_srcx);
+		Text t_dsty = new defaultText("Y",winWidth * (15+325.0)/450,winHeight * (520.0/800));
 		root.getChildren().add(t_dsty);
 		
-		TextField tf_dstx = new NumberTextField(x_srcx+240+25,y_srcx-20);
+		TextField tf_dstx = new NumberTextField( (int) ( winWidth *(15+240+25.0)/450 ),(int) ( winHeight * (520-20.0)/800 ) );
 		tf_dstx.setMaxWidth(tf_width );
 		root.getChildren().add(tf_dstx);
 		
-		TextField tf_dsty = new NumberTextField(x_srcx+240+25+85,y_srcx-20);
+		TextField tf_dsty = new NumberTextField( (int) ( winWidth*(15+240+25+85.0)/450), (int) (winHeight * (520-20.0)/800));
 		tf_dsty.setMaxWidth(tf_width );
 		root.getChildren().add(tf_dsty);
 		
-		Text t_src = new defaultText("Source:",x_srcx,y_srcx-35);
+		Text t_src = new defaultText("Source:",winWidth * (15.0/450),winHeight * (520-35.0)/800);
 		root.getChildren().add(t_src);
 		
-		Text t_dst = new defaultText("Destination:",x_srcx+240,y_srcx-35);
+		Text t_dst = new defaultText("Destination:",winWidth * (15+240.0)/450,winHeight * (520-35.0)/800);
 		root.getChildren().add(t_dst);
 		
 		//Button
 		Button addPassenger = new Button("Add Passenger");
 		addPassenger.setTranslateX(winWidth/2*0.72);
-		addPassenger.setTranslateY(y_srcx+20);
+		addPassenger.setTranslateY(winHeight * (520+20.0)/800);
 		root.getChildren().add(addPassenger);
 		
 		Taxii.setBlockWeight( 0, 0, 3);
