@@ -26,25 +26,29 @@ import javafx.util.Duration;
 public class Main extends Application {
 	
 	
+	//Can be changed
+	private int boxes = 8;
+	private int maxTaxi = 1;
+	private int maxPassenger = 10;
 	
+	
+	//Do not change
+	//-------------------------------------------------------
 	private int winWidth = 450;
 	private int winHeight = 800;
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
-	private int boxes = 8;
 	private int maxBlocks =4;
-	private int numTaxi = 0;
-	private int maxTaxi = 4;
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
+	private int numTaxi = 0;
 	private int numPassenger = 0;
-	private int maxPassenger = 10;
 	private int[][][] list = new int[maxPassenger][3][2];
 	private int[][] Taxi = new int[maxTaxi][2];
 	private int[][] blockWeight = new int[boxes+1][boxes+1];
 	private long time =0;
-	Taxi Taxii = new Taxi(maxPassenger,1,boxes);
 	
+	Taxi Taxii = new Taxi(maxPassenger,1,boxes);
 	Color[] colorPassenger = new Color[10];
 	mainCanvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc_box = canvas.getGraphicsContext2D();
@@ -53,6 +57,9 @@ public class Main extends Application {
 	GraphicsContext gc_taxi = canvas.getGraphicsContext2D();
 	GraphicsContext gc_weight = canvas.getGraphicsContext2D();
 	GraphicsContext gc = canvas.getGraphicsContext2D();
+	//-------------------------------------------------------
+	
+	
 	@Override
 	public void start(Stage primaryStage) {
 		//GUI
@@ -122,15 +129,18 @@ public class Main extends Application {
 		addPassenger(8,8,3,3);
 		addTaxi();
 		
-		primaryStage.show();
-		
+		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
 		Taxi = Taxii.getTaxiCoords();
+		
+		//Draw 
+		primaryStage.show();
 		drawBoxes();
 		drawBlocks();
 		drawTaxi();
 		drawWeight();
 		
+		//Loop
 		Timeline timeline = new Timeline(
 				new KeyFrame(Duration.seconds(1), e -> {
 					gc.setFill( Color.WHITE);
@@ -151,6 +161,7 @@ public class Main extends Application {
 		
 		timeline.play();
 		
+		//Button Action
 		addPassenger.setOnAction( 
 				new EventHandler<ActionEvent>(){
 			@Override
