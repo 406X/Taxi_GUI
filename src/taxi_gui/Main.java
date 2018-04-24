@@ -1,14 +1,12 @@
+//406X
+
 package taxi_gui;
 
-
-import java.util.Arrays;
 import static javafx.animation.Animation.INDEFINITE;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,10 +14,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -30,7 +26,7 @@ public class Main extends Application {
 	//Can be changed
 	private int boxes = 10;
 	private int maxTaxi = 1;
-	private int maxPassenger = 20;
+	private int maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
 	
@@ -126,14 +122,12 @@ public class Main extends Application {
 		root.getChildren().add(addRandPassenger);
 
 		//Test Variables
-		addPassenger(2,2,4,4);
-		addPassenger(8,8,3,3);
 		addTaxi();
+		Taxii.setBlockWeight( 0, 0, 3);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
 		Taxi = Taxii.getTaxiCoords();
-		Taxii.setBlockWeight( 0, 0, 3);
 		blockWeight = Taxii.getBlockWeight();
 		
 		
@@ -206,8 +200,14 @@ public class Main extends Application {
 					countBlock=0;
 					int srcx = random.nextInt(boxes)+1;
 					int srcy = random.nextInt(boxes)+1;
+					
 					int dstx = random.nextInt(boxes)+1;
 					int dsty = random.nextInt(boxes)+1;
+					
+					while( dstx == srcx && dsty == srcy){
+						int dstx = random.nextInt(boxes)+1;
+						int dsty = random.nextInt(boxes)+1;
+					}
 					
 					for(int count = 0 ; count < numPassenger ; count++){
 						if( list[count][2][0] == srcx
