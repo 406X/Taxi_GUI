@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public class Taxi {
 	
+	
 	private int numPassenger = 0;
 	private int[][][] passenger;
 	private int numTaxi = 0;
@@ -20,7 +21,7 @@ public class Taxi {
 	private int[][] taxiCoords = new int[maxTaxi][2];
 	private int[][] taxiPassenger = new int[maxTaxi][taxiSize];
 	private int[] taxiNumPassenger = new int[maxTaxi];
-	private int[][] blockWeight = new int[boxes+1][boxes+1];
+	private int[][] blockWeight;
 	private int[] passengerStatus = new int[maxPassenger];
 	private int[] taxiWeight = new int[maxTaxi];
 	private int[] taxiFetching = new int[maxTaxi];
@@ -45,7 +46,7 @@ public class Taxi {
 		this.maxPassenger = maxPassenger;
 		this.taxiSize = taxiSize;
 		this.boxes = boxes;
-		
+		blockWeight = new int[boxes+1][boxes+1];;
 		
 		Arrays.fill(taxiFetching, -1);
 		taxiPassenger = new int[maxTaxi][taxiSize];
@@ -63,7 +64,6 @@ public class Taxi {
 	public void add(int s_x ,int s_y ,int d_x ,int d_y){
 		if(numPassenger<maxPassenger){
 			numPassenger++;
-			System.out.println(numPassenger);
 			passenger[numPassenger-1][0][0] = s_x;
 			passenger[numPassenger-1][0][1] = s_y;
 			passenger[numPassenger-1][1][0] = d_x;

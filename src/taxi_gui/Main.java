@@ -27,7 +27,7 @@ public class Main extends Application {
 	
 	
 	//Can be changed
-	private int boxes = 8;
+	private int boxes = 10;
 	private int maxTaxi = 1;
 	private int maxPassenger = 10;
 	private int winWidth = 450; //Default: 450
@@ -42,9 +42,9 @@ public class Main extends Application {
 	private double sqrHeight = canvasHeight/boxes;
 	private int numTaxi = 0;
 	private int numPassenger = 0;
-	private int[][][] list = new int[maxPassenger][3][2];
-	private int[][] Taxi = new int[maxTaxi][2];
-	private int[][] blockWeight = new int[boxes+1][boxes+1];
+	private int[][][] list;
+	private int[][] Taxi;
+	private int[][] blockWeight;
 	private long time =0;
 	
 	Taxi Taxii = new Taxi(maxPassenger,1,boxes);
@@ -132,8 +132,9 @@ public class Main extends Application {
 		
 		//Draw 
 		primaryStage.show();
-		drawBoxes();
+		
 		drawBlocks();
+		drawBoxes();
 		drawTaxi();
 		drawWeight();
 		
@@ -146,8 +147,9 @@ public class Main extends Application {
 					numPassenger = Taxii.getNumPassenger();
 					list = Taxii.getPassengerCoords();
 					Taxi = Taxii.getTaxiCoords();
-					drawBoxes();
+					
 					drawBlocks();
+					drawBoxes();
 					drawTaxi();
 					drawWeight();
 					time+=1;
@@ -163,7 +165,20 @@ public class Main extends Application {
 				new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
-				addPassenger(Integer.valueOf(tf_srcx.getText()),Integer.valueOf(tf_srcy.getText()) ,Integer.valueOf(tf_dstx.getText()),Integer.valueOf(tf_dsty.getText()));
+				int countBlock = 0;
+				for(int count = 0 ; count < numPassenger ; count++){
+					if( list[count][2][0] == Integer.valueOf( tf_srcx.getText() ) 
+						&& list[count][2][1] == Integer.valueOf( tf_srcy.getText() ) ){
+						countBlock++;
+					}
+				}	
+				if(	countBlock < maxBlocks  
+					&& Integer.valueOf(tf_srcx.getText()) < boxes 
+					&& Integer.valueOf(tf_srcy.getText()) < boxes 
+					&& Integer.valueOf(tf_dstx.getText()) < boxes 
+					&& Integer.valueOf(tf_dsty.getText()) < boxes )
+					
+					addPassenger(Integer.valueOf(tf_srcx.getText()),Integer.valueOf(tf_srcy.getText()) ,Integer.valueOf(tf_dstx.getText()),Integer.valueOf(tf_dsty.getText()));
 			}
 		});
 		
@@ -175,7 +190,7 @@ public class Main extends Application {
 	}
 	
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
-		Taxii.add(y_src, x_src, x_dest, y_dest);
+		Taxii.add(x_src, y_src, x_dest, y_dest);
 		numPassenger++;
 	}
 	
@@ -197,7 +212,7 @@ public class Main extends Application {
 	
 	
 	public void drawBlocks(){
-		gc_blocks.setFill(Color.BLACK);
+		gc_blocks.setFill(Color.RED);
 		int[][] countBlock = new int[boxes][boxes];
 		for(int count = 0 ;count < numPassenger ; count++){
 			gc_blocks.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/2, sqrHeight/2);
