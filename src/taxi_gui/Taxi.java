@@ -15,14 +15,14 @@ public class Taxi {
 	private int maxPassenger = 10;
 	private int taxiSize = 2;
 	private int boxes =8;
-	private int[] passengerColor = new int[maxPassenger];
+	private int[] passengerColor;
 	private int[] taxiColor = new int[maxTaxi];
-	private int[][][] list = new int[maxPassenger][3][2];
+	private int[][][] list;
 	private int[][] taxiCoords = new int[maxTaxi][2];
 	private int[][] taxiPassenger = new int[maxTaxi][taxiSize];
 	private int[] taxiNumPassenger = new int[maxTaxi];
 	private int[][] blockWeight;
-	private int[] passengerStatus = new int[maxPassenger];
+	private int[] passengerStatus;
 	private int[] taxiWeight = new int[maxTaxi];
 	private int[] taxiFetching = new int[maxTaxi];
 	/*
@@ -47,6 +47,11 @@ public class Taxi {
 		this.taxiSize = taxiSize;
 		this.boxes = boxes;
 		blockWeight = new int[boxes+1][boxes+1];;
+		passengerStatus  = new int[maxPassenger];
+		list =  new int[maxPassenger][3][2];
+		passengerColor = new int[maxPassenger];
+		
+		
 		
 		Arrays.fill(taxiFetching, -1);
 		taxiPassenger = new int[maxTaxi][taxiSize];
@@ -117,6 +122,13 @@ public class Taxi {
 		int closestIndex = 0;
 		
 		for(int count = 0 ; count < numPassenger ; count++){
+			
+			if( passenger[count][0][0] == 0 && passenger[count][0][1] == 0
+					&& passenger[count][1][0] == 0 && passenger[count][1][1] == 0
+					&& passenger[count][2][0] == 0 && passenger[count][2][1] == 0)
+			{
+				break;
+			}
 			distance[count] =  ( taxiCoords[index][0] - passenger[count][0][0] ) + taxiCoords[index][1] - passenger[count][0][1];
 			
 			if(distance[count]<0)
