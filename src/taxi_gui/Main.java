@@ -23,13 +23,14 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.Random;
 public class Main extends Application {
 	
 	
 	//Can be changed
 	private int boxes = 10;
 	private int maxTaxi = 1;
-	private int maxPassenger = 10;
+	private int maxPassenger = 20;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
 	
@@ -49,13 +50,14 @@ public class Main extends Application {
 	
 	Taxi Taxii = new Taxi(maxPassenger,1,boxes);
 	Color[] colorPassenger = new Color[10];
-	mainCanvas canvas = new mainCanvas(canvasWidth,canvasHeight);
+	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc_box = canvas.getGraphicsContext2D();
 	GraphicsContext gc_blocks = canvas.getGraphicsContext2D();
 	int box_lineWidth = 4;
 	GraphicsContext gc_taxi = canvas.getGraphicsContext2D();
 	GraphicsContext gc_weight = canvas.getGraphicsContext2D();
 	GraphicsContext gc = canvas.getGraphicsContext2D();
+	Random random = new Random();
 	//-------------------------------------------------------
 	
 	
@@ -118,9 +120,11 @@ public class Main extends Application {
 		addPassenger.setTranslateY(winHeight * (520+20.0)/800);
 		root.getChildren().add(addPassenger);
 		
-		Taxii.setBlockWeight( 0, 0, 3);
-		blockWeight = Taxii.getBlockWeight();
-		
+		Button addRandPassenger = new Button("Add Random Passenger");
+		addRandPassenger.setTranslateX(winWidth/2*0.62);
+		addRandPassenger.setTranslateY(winHeight * (520+60.0)/800);
+		root.getChildren().add(addRandPassenger);
+
 		//Test Variables
 		addPassenger(2,2,4,4);
 		addPassenger(8,8,3,3);
@@ -129,14 +133,16 @@ public class Main extends Application {
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
 		Taxi = Taxii.getTaxiCoords();
+		Taxii.setBlockWeight( 0, 0, 3);
+		blockWeight = Taxii.getBlockWeight();
+		
 		
 		//Draw 
-		primaryStage.show();
-		
 		drawBlocks();
 		drawBoxes();
 		drawTaxi();
 		drawWeight();
+		primaryStage.show();
 		
 		//Loop
 		Timeline timeline = new Timeline(
@@ -173,12 +179,47 @@ public class Main extends Application {
 					}
 				}	
 				if(	countBlock < maxBlocks  
-					&& Integer.valueOf(tf_srcx.getText()) < boxes 
-					&& Integer.valueOf(tf_srcy.getText()) < boxes 
-					&& Integer.valueOf(tf_dstx.getText()) < boxes 
-					&& Integer.valueOf(tf_dsty.getText()) < boxes )
+					&& Integer.valueOf(tf_srcx.getText()) <= boxes 
+					&& Integer.valueOf(tf_srcy.getText()) <= boxes 
+					&& Integer.valueOf(tf_dstx.getText()) <= boxes 
+					&& Integer.valueOf(tf_dsty.getText()) <= boxes 
+					&& Integer.valueOf(tf_srcx.getText()) >0
+					&& Integer.valueOf(tf_srcy.getText()) >0
+					&& Integer.valueOf(tf_dstx.getText()) >0
+					&& Integer.valueOf(tf_dsty.getText()) >0
+				)
 					
-					addPassenger(Integer.valueOf(tf_srcx.getText()),Integer.valueOf(tf_srcy.getText()) ,Integer.valueOf(tf_dstx.getText()),Integer.valueOf(tf_dsty.getText()));
+					addPassenger(Integer.valueOf(tf_srcx.getText())
+								,Integer.valueOf(tf_srcy.getText()) 
+								,Integer.valueOf(tf_dstx.getText())
+								,Integer.valueOf(tf_dsty.getText()));
+			}
+		});
+		
+		addRandPassenger.setOnAction( 
+				new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e) {
+				int countBlock = maxBlocks;
+				
+				while(countBlock >= maxBlocks){
+					countBlock=0;
+					int srcx = random.nextInt(boxes)+1;
+					int srcy = random.nextInt(boxes)+1;
+					int dstx = random.nextInt(boxes)+1;
+					int dsty = random.nextInt(boxes)+1;
+					
+					for(int count = 0 ; count < numPassenger ; count++){
+						if( list[count][2][0] == srcx
+								&& list[count][2][1] == srcy ){
+							countBlock++;
+						}
+					}
+					if(	countBlock < maxBlocks){
+						addPassenger( srcx,srcy,dstx,dsty);
+						break;
+					}
+				}
 			}
 		});
 		
@@ -190,8 +231,10 @@ public class Main extends Application {
 	}
 	
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
-		Taxii.add(x_src, y_src, x_dest, y_dest);
-		numPassenger++;
+		if(numPassenger<maxPassenger){
+			Taxii.add(x_src, y_src, x_dest, y_dest);
+			numPassenger++;
+		}
 	}
 	
 	public void addTaxi(){
