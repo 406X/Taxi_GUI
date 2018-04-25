@@ -25,7 +25,7 @@ public class Main extends Application {
 	
 	//Can be changed
 	private int boxes = 10;
-	private int maxTaxi = 1;
+	private int maxTaxi = 2;
 	private int maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
@@ -44,7 +44,7 @@ public class Main extends Application {
 	private int[][] blockWeight;
 	private long time =0;
 	
-	Taxi Taxii = new Taxi(maxPassenger,1,boxes);
+	Taxi Taxii = new Taxi(maxPassenger,1,boxes,maxTaxi);
 	Color[] colorPassenger = new Color[10];
 	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc_box = canvas.getGraphicsContext2D();
@@ -120,6 +120,11 @@ public class Main extends Application {
 		addRandPassenger.setTranslateX(winWidth/2*0.62);
 		addRandPassenger.setTranslateY(winHeight * (520+60.0)/800);
 		root.getChildren().add(addRandPassenger);
+		
+		Button addTaxi = new Button("Add Taxi");
+		addTaxi.setTranslateX(winWidth/2*0.80);
+		addTaxi.setTranslateY(winHeight * (520+100.0)/800);
+		root.getChildren().add(addTaxi);
 
 		//Test Variables
 		addTaxi();
@@ -141,6 +146,8 @@ public class Main extends Application {
 		//Loop
 		Timeline timeline = new Timeline(
 				new KeyFrame(Duration.seconds(1), e -> {
+					if(time==7)
+						addTaxi();
 					gc.setFill( Color.WHITE);
 					gc.fillRect(0, 0, canvasWidth, canvasHeight);
 					Taxii.move();
@@ -223,6 +230,16 @@ public class Main extends Application {
 			}
 		});
 		
+		
+		addTaxi.setOnAction(
+				new EventHandler<ActionEvent>(){
+					@Override
+					public void handle(ActionEvent e) {
+						addTaxi();
+					}
+				}	
+		);
+		
 	}//End of start
 	
 	
@@ -238,8 +255,10 @@ public class Main extends Application {
 	}
 	
 	public void addTaxi(){
-		Taxii.addTaxi();
-		numTaxi++;
+		if(numTaxi<maxTaxi){
+			Taxii.addTaxi();
+			numTaxi++;
+		}
 	}
 	
 	public void drawBoxes(){
