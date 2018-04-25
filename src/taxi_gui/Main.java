@@ -205,8 +205,8 @@ public class Main extends Application {
 					int dsty = random.nextInt(boxes)+1;
 					
 					while( dstx == srcx && dsty == srcy){
-						int dstx = random.nextInt(boxes)+1;
-						int dsty = random.nextInt(boxes)+1;
+						dstx = random.nextInt(boxes)+1;
+						dsty = random.nextInt(boxes)+1;
 					}
 					
 					for(int count = 0 ; count < numPassenger ; count++){
