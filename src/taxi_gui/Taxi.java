@@ -93,8 +93,8 @@ public class Taxi {
 				list = taxi[count].getPassenger();
 				
 				for(int count2 = 0 ; count2 < list.length ; count2++){
-					if( list[count][2][0] == srcx
-							&& list[count][2][1] == srcy ){
+					if( list[count2][2][0] == srcx
+							&& list[count2][2][1] == srcy ){
 						countBlock++;
 					}
 				}
