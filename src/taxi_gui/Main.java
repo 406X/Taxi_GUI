@@ -26,7 +26,7 @@ public class Main extends Application {
 	//Can be changed
 	private int boxes = 10;
 	private int maxTaxi = 5;
-	private int maxPassenger = 40;
+	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
 	private int taxiSize = 1;
@@ -40,11 +40,11 @@ public class Main extends Application {
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
 	private int numTaxi = 0;
-	private int numPassenger = 0;
+	private  int numPassenger = 0;
 	private int[][][] list;
 	private int[][] Taxi;
 	private int[][] blockWeight;
-	private long time =0;
+	private static long time = 0;
 	
 	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
@@ -60,7 +60,7 @@ public class Main extends Application {
 	
 	
 	@Override
-	public void start(Stage primaryStage) {
+	public  void start(Stage primaryStage) {
 		//GUI
 		primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time + " seconds");
 		
@@ -127,9 +127,6 @@ public class Main extends Application {
 		addTaxi.setTranslateX(winWidth/2*0.80);
 		addTaxi.setTranslateY(winHeight * (520+100.0)/800);
 		root.getChildren().add(addTaxi);
-
-		//Test Variables
-		addTaxi();
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
@@ -159,6 +156,7 @@ public class Main extends Application {
 					drawTaxi();
 					drawWeight();
 					time+=1;
+					Taxii.setTime(time);
 					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" seconds");
 				})
 		);

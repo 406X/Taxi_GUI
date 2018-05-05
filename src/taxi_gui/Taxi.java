@@ -19,9 +19,11 @@ public class Taxi {
 	private int maxBlocks = numBlocks - taxiSize;
 	private static PassengerList passengerList = new PassengerList(maxPassenger);
 	private static TaxiObject[] taxi = new TaxiObject[maxTaxi];
+	private static Log log = new Log();
+	private static long time = 0;
 	
-
 	public Taxi(int maxPassenger, int taxiSize, int boxes, int numBlocks, int maxTaxi){
+		this.time = time;
 		this.maxPassenger = maxPassenger;
 		this.passengerList = new PassengerList(maxPassenger);
 		this.taxiSize = taxiSize;
@@ -31,8 +33,6 @@ public class Taxi {
 		blockWeight = new int[boxes+1][boxes+1];;
 
 		taxi = new TaxiObject[maxTaxi];
-		for(int count = 0 ; count < maxTaxi ; count++)
-			taxi[count] = new TaxiObject(1,0,0,passengerList);
 		
 		for(int count = 0 ; count< boxes ;count++)
 			Arrays.fill(blockWeight[count], 1);
@@ -69,7 +69,7 @@ public class Taxi {
 	}
 	
 	public void addTaxi(){
-		taxi[numTaxi] = new TaxiObject(1,1,1,passengerList);
+		taxi[numTaxi] = new TaxiObject(1,1,1,passengerList,log,numTaxi+1);
 		numTaxi++;
 	}
 	
@@ -170,7 +170,15 @@ public class Taxi {
 	}
 	
 	public void move(){
-		for(int count = 0 ; count < numTaxi ; count++)
+		for(int count = 0 ; count < numTaxi ; count++){
 			taxi[count].move();
+			taxi[count].setTime(time);
+		}
+		log.flush();
 	}
+	
+		public void setTime(long num){
+		time = num;
+	}
+	
 }
