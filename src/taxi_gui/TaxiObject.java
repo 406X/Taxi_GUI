@@ -6,7 +6,9 @@ public class TaxiObject {
 	
 	private int maxPassenger = 1;
 	private int numPassenger = 0;
-	
+	private static Log log = new Log();
+	private static long time = 0;
+	private int ID;
 	private int[][][] passenger = new int[maxPassenger][3][2];
 	// passenger[ passengerID ]
 	// [0] - Source Coordinate
@@ -27,7 +29,10 @@ public class TaxiObject {
 	
 	private static PassengerList passengerList;
 	
-	public TaxiObject(int maxPassenger, int x , int y, PassengerList pList){
+	public TaxiObject(int maxPassenger, int x , int y, PassengerList pList,Log log,int id){
+		this.log = log;
+		this.ID = id;
+		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		passengerList = pList;
 		this.maxPassenger = maxPassenger;
 		passenger = new int[maxPassenger][3][2];
@@ -54,21 +59,31 @@ public class TaxiObject {
 		if(numPassenger == 0){
 			if( passengerList.getNumPassenger() > 0){
 				addPassenger( passengerList.getClosestPassenger(x, y) );
+				log.writelog("["+ time + "]" + " Taxi " + ID +  " going to pick-up passenger at(" + passenger[0][0][0] + "," + passenger[0][0][1] +")" );
 				move();
 			}
 		}
 		else{
 			if(passengerStatus[0] == 0){	
-				if( x < passenger[0][2][0] )
+				if( x < passenger[0][2][0] ){
 					x += 1;
-				else if( x > passenger[0][2][0] )
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving right");
+				}
+				else if( x > passenger[0][2][0] ){
 					x -= 1;
-				else if( y < passenger[0][2][1] )
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving left");
+				}
+				else if( y < passenger[0][2][1] ){
 					y += 1;
-				else if( y > passenger[0][2][1] )
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving down");
+				}
+				else if( y > passenger[0][2][1] ){
 					y -= 1;
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving up");
+				}
 				else if( x == passenger[0][2][0] && y ==   passenger[0][2][1]){
 					passengerStatus[0] = 1;
+					log.writelog("["+ time + "]" + "Taxi " + ID +  " picked up passenger, heading to destination");
 					move();
 				}
 			}
@@ -76,21 +91,26 @@ public class TaxiObject {
 				if( x < passenger[0][1][0] ){
 					x += 1;
 					passenger[0][2][0]+=1;
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving right");
 				}
 				else if( x > passenger[0][1][0] ){
 					x -= 1;
 					passenger[0][2][0]-=1;
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving left");
 				}
 				else if( y > passenger[0][1][1] ){
 					y -= 1;
 					passenger[0][2][1]-=1;
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving up");
 				}
 				else if( y < passenger[0][1][1] ){
 					y += 1;
 					passenger[0][2][1]+=1;
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving down");
 				}
 				else if( x == passenger[0][1][0] && y ==   passenger[0][1][1]){
 					dropPassenger(0);
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " arrived at destination, dropping off passenger");
 					move();
 				}
 			}
@@ -116,5 +136,7 @@ public class TaxiObject {
 		return coords;
 	}
 	
-	
+	public void setTime(long num){
+		time = num;
+	}
 }
