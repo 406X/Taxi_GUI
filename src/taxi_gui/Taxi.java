@@ -15,16 +15,19 @@ public class Taxi {
 	private int taxiSize = 2;
 	private int boxes =8;
 	private int[][] blockWeight;
-	private int maxBlocks = 4;
+	private int numBlocks = 4;
+	private int maxBlocks = numBlocks - taxiSize;
 	private static PassengerList passengerList = new PassengerList(maxPassenger);
 	private static TaxiObject[] taxi = new TaxiObject[maxTaxi];
 	
 
-	public Taxi(int maxPassenger, int taxiSize, int boxes, int maxTaxi){
+	public Taxi(int maxPassenger, int taxiSize, int boxes, int numBlocks, int maxTaxi){
 		this.maxPassenger = maxPassenger;
 		this.passengerList = new PassengerList(maxPassenger);
 		this.taxiSize = taxiSize;
 		this.boxes = boxes;
+		this.numBlocks = numBlocks;
+		maxBlocks = numBlocks - taxiSize;
 		blockWeight = new int[boxes+1][boxes+1];;
 
 		taxi = new TaxiObject[maxTaxi];
@@ -37,7 +40,32 @@ public class Taxi {
 	
 	
 	public void add(int s_x ,int s_y ,int d_x ,int d_y){
-		passengerList.addPassenger(s_x, s_y, d_x, d_y);
+		int countBlock = 0;
+
+		int[][][] list = passengerList.getPassengers();
+		
+		for(int count = 0 ; count < list.length ; count++){
+			if( list[count][2][0] == s_x
+					&& list[count][2][1] == s_y ){
+				countBlock++;
+			}
+		}
+		
+		for(int count = 0 ; count < numTaxi ; count++){
+			list = taxi[count].getPassenger();
+			
+			for(int count2 = 0 ; count2 < list.length ; count2++){
+				if( list[count2][2][0] == s_x
+						&& list[count2][2][1] == s_y ){
+					countBlock++;
+				}
+			}
+			
+		}
+		
+		if(	countBlock < maxBlocks){
+			passengerList.addPassenger( s_x, s_y, d_x, d_y);
+		}
 	}
 	
 	public void addTaxi(){

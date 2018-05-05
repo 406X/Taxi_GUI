@@ -8,7 +8,7 @@ public class TaxiObject {
 	private int numPassenger = 0;
 	
 	private int[][][] passenger = new int[maxPassenger][3][2];
-	//passenger[ passengerID ]
+	// passenger[ passengerID ]
 	// [0] - Source Coordinate
 	// [1] - Destination Coordinate
 	// [2] - Current Coordinate

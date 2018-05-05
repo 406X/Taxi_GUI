@@ -8,6 +8,13 @@ public class PassengerList {
 	private int maxPassenger = 10;
 	private int numPassenger = 0;
 	private int[][][] passenger = new int[maxPassenger][3][2];
+	// passenger[ passengerID ]
+	// [0] - Source Coordinate
+	// [1] - Destination Coordinate
+	// [2] - Current Coordinate
+	// [ 0/1/2 ][ 0 ] - X coordinate
+	// [ 0/1/2 ][ 1 ] - Y coordinate
+	
 	
 	public PassengerList(int maxPassenger){
 		this.maxPassenger = maxPassenger;

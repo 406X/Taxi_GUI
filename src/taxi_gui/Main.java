@@ -25,16 +25,18 @@ public class Main extends Application {
 	
 	//Can be changed
 	private int boxes = 10;
-	private int maxTaxi = 2;
+	private int maxTaxi = 5;
 	private int maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
+	private int taxiSize = 1;
 	
 	//Do not change
 	//-------------------------------------------------------
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
-	private int maxBlocks =4;
+	private int numBlocks = 9; // Must be square number
+	private int maxBlocks = numBlocks - taxiSize;
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
 	private int numTaxi = 0;
@@ -44,7 +46,7 @@ public class Main extends Application {
 	private int[][] blockWeight;
 	private long time =0;
 	
-	Taxi Taxii = new Taxi(maxPassenger,1,boxes,maxTaxi);
+	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
 	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc_box = canvas.getGraphicsContext2D();
@@ -167,31 +169,13 @@ public class Main extends Application {
 		//Button Action
 		addPassenger.setOnAction( 
 				new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent e) {
-				int countBlock = 0;
-				for(int count = 0 ; count < numPassenger ; count++){
-					if( list[count][2][0] == Integer.valueOf( tf_srcx.getText() ) 
-						&& list[count][2][1] == Integer.valueOf( tf_srcy.getText() ) ){
-						countBlock++;
-					}
-				}	
-				if(	countBlock < maxBlocks  
-					&& Integer.valueOf(tf_srcx.getText()) <= boxes 
-					&& Integer.valueOf(tf_srcy.getText()) <= boxes 
-					&& Integer.valueOf(tf_dstx.getText()) <= boxes 
-					&& Integer.valueOf(tf_dsty.getText()) <= boxes 
-					&& Integer.valueOf(tf_srcx.getText()) >0
-					&& Integer.valueOf(tf_srcy.getText()) >0
-					&& Integer.valueOf(tf_dstx.getText()) >0
-					&& Integer.valueOf(tf_dsty.getText()) >0
-				)
-					
-					addPassenger(Integer.valueOf(tf_srcx.getText())
-								,Integer.valueOf(tf_srcy.getText()) 
+					@Override
+					public void handle(ActionEvent e) {
+						addPassenger(Integer.valueOf(tf_srcx.getText())
+								,Integer.valueOf(tf_srcy.getText())
 								,Integer.valueOf(tf_dstx.getText())
 								,Integer.valueOf(tf_dsty.getText()));
-			}
+					}
 		});
 		
 		addRandPassenger.setOnAction(
@@ -222,7 +206,7 @@ public class Main extends Application {
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
 		if(numPassenger<maxPassenger){
 			Taxii.add(x_src, y_src, x_dest, y_dest);
-			numPassenger++;
+			numPassenger = Taxii.getNumPassenger();
 		}
 	}
 	
@@ -246,10 +230,11 @@ public class Main extends Application {
 	
 	
 	public void drawBlocks(){
+		double size = Math.sqrt(numBlocks);
 		gc_blocks.setFill(Color.RED);
 		int[][] countBlock = new int[boxes][boxes];
 		for(int count = 0 ;count < numPassenger ; count++){
-			gc_blocks.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/2, sqrHeight/2);
+			gc_blocks.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/size, sqrHeight/size);
 			countBlock[list[count][2][0]-1][list[count][2][1]-1]++;
 		}
 	}
@@ -277,19 +262,19 @@ public class Main extends Application {
 	public double convertX(int blockX,int blockY,int[][] countBlock){
 		blockX--;
 		blockY--;
-		if(countBlock[blockX][blockY]==0 || countBlock[blockX][blockY] == 2 )
-			return sqrWidth*blockX;
-		else
-			return sqrWidth*blockX+sqrWidth/2;
+		
+		double size = Math.sqrt(numBlocks);
+		
+		return sqrWidth*blockX + sqrWidth*(countBlock[blockX][blockY]%size)/size;
 	}
 	
 	public double convertY(int blockX,int blockY,int countBlock[][]){
 		blockX--;
 		blockY--;
-		if(countBlock[blockX][blockY]==0 || countBlock[blockX][blockY] == 1 )
-			return sqrHeight*blockY;
-		else
-			return sqrHeight*blockY+sqrHeight/2;
+		
+		double size = Math.sqrt(numBlocks);
+		
+		return sqrHeight*blockY + sqrHeight*((int)((countBlock[blockX][blockY])/size))/size;
 	}
 	
 }
