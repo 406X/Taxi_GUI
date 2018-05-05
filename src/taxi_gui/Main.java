@@ -128,7 +128,6 @@ public class Main extends Application {
 
 		//Test Variables
 		addTaxi();
-		Taxii.setBlockWeight( 0, 0, 3);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
@@ -146,8 +145,6 @@ public class Main extends Application {
 		//Loop
 		Timeline timeline = new Timeline(
 				new KeyFrame(Duration.seconds(1), e -> {
-					if(time==7)
-						addTaxi();
 					gc.setFill( Color.WHITE);
 					gc.fillRect(0, 0, canvasWidth, canvasHeight);
 					Taxii.move();
@@ -197,38 +194,13 @@ public class Main extends Application {
 			}
 		});
 		
-		addRandPassenger.setOnAction( 
+		addRandPassenger.setOnAction(
 				new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent e) {
-				int countBlock = maxBlocks;
-				
-				while(countBlock >= maxBlocks){
-					countBlock=0;
-					int srcx = random.nextInt(boxes)+1;
-					int srcy = random.nextInt(boxes)+1;
-					
-					int dstx = random.nextInt(boxes)+1;
-					int dsty = random.nextInt(boxes)+1;
-					
-					while( dstx == srcx && dsty == srcy){
-						dstx = random.nextInt(boxes)+1;
-						dsty = random.nextInt(boxes)+1;
+					@Override
+					public void handle(ActionEvent e) {
+						Taxii.addRandomPassenger();
 					}
-					
-					for(int count = 0 ; count < numPassenger ; count++){
-						if( list[count][2][0] == srcx
-								&& list[count][2][1] == srcy ){
-							countBlock++;
-						}
-					}
-					if(	countBlock < maxBlocks){
-						addPassenger( srcx,srcy,dstx,dsty);
-						break;
-					}
-				}
-			}
-		});
+				});
 		
 		
 		addTaxi.setOnAction(
