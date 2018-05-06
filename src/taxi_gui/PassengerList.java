@@ -7,18 +7,21 @@ public class PassengerList {
 	
 	private int maxPassenger = 10;
 	private int numPassenger = 0;
-	private int[][][] passenger = new int[maxPassenger][3][2];
+	private int[][][] passenger = new int[maxPassenger][4][2];
+	private int time = 0;
 	// passenger[ passengerID ]
-	// [0] - Source Coordinate
-	// [1] - Destination Coordinate
-	// [2] - Current Coordinate
+	// [ 0 ] - Source Coordinate
+	// [ 1 ] - Destination Coordinate
+	// [ 2 ] - Current Coordinate
 	// [ 0/1/2 ][ 0 ] - X coordinate
 	// [ 0/1/2 ][ 1 ] - Y coordinate
-	
+	// [ 3 ] Time
+	// [ 3][ 0 ] Time passenger called
+	// [ 3][ 1 ] Time passenger picked up
 	
 	public PassengerList(int maxPassenger){
 		this.maxPassenger = maxPassenger;
-		passenger = new int[maxPassenger][3][2];
+		passenger = new int[maxPassenger][4][2];
 	}
 	
 	public void addPassenger(int s_x , int s_y , int d_x , int d_y ){
@@ -29,6 +32,7 @@ public class PassengerList {
 			passenger[numPassenger][1][1] = d_y;
 			passenger[numPassenger][2][0] = s_x;
 			passenger[numPassenger][2][1] = s_y;
+			passenger[numPassenger][3][0] = time;
 			numPassenger++;
 		}
 	}
@@ -68,7 +72,7 @@ public class PassengerList {
 	}
 	
 	public int[][][] getPassengers(){
-		int[][][] temp = new int[numPassenger][3][2];
+		int[][][] temp = new int[numPassenger][4][2];
 		for(int count = 0 ; count < numPassenger ; count++)
 			temp[count] = passenger[count].clone();
 	
@@ -79,5 +83,8 @@ public class PassengerList {
 		return numPassenger;
 	}
 	
+	public void setTime(int time){
+		this.time = time;
+	}
 	
 }

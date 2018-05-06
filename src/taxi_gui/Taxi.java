@@ -20,7 +20,7 @@ public class Taxi {
 	private static PassengerList passengerList = new PassengerList(maxPassenger);
 	private static TaxiObject[] taxi = new TaxiObject[maxTaxi];
 	private static Log log = new Log();
-	private static long time = 0;
+	private static int time = 0;
 	
 	public Taxi(int maxPassenger, int taxiSize, int boxes, int numBlocks, int maxTaxi){
 		this.time = time;
@@ -170,6 +170,7 @@ public class Taxi {
 	}
 	
 	public void move(){
+		passengerList.setTime(time);
 		for(int count = 0 ; count < numTaxi ; count++){
 			taxi[count].move();
 			taxi[count].setTime(time);
@@ -177,7 +178,7 @@ public class Taxi {
 		log.flush();
 	}
 	
-		public void setTime(long num){
+		public void setTime(int num){
 		time = num;
 	}
 	

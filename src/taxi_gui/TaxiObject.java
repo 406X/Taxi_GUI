@@ -7,9 +7,9 @@ public class TaxiObject {
 	private int maxPassenger = 1;
 	private int numPassenger = 0;
 	private static Log log = new Log();
-	private static long time = 0;
+	private static int time = 0;
 	private int ID;
-	private int[][][] passenger = new int[maxPassenger][3][2];
+	private int[][][] passenger = new int[maxPassenger][4][2];
 	// passenger[ passengerID ]
 	// [0] - Source Coordinate
 	// [1] - Destination Coordinate
@@ -35,7 +35,7 @@ public class TaxiObject {
 		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		passengerList = pList;
 		this.maxPassenger = maxPassenger;
-		passenger = new int[maxPassenger][3][2];
+		passenger = new int[maxPassenger][4][2];
 		passengerStatus = new int[maxPassenger];
 		this.x = x;
 		this.y = y;
@@ -82,8 +82,10 @@ public class TaxiObject {
 					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving up");
 				}
 				else if( x == passenger[0][2][0] && y ==   passenger[0][2][1]){
+					passenger[0][3][0] = time - passenger[0][3][0]; // Calculate time waited for taxi to arrive
+					passenger[0][3][1] = time; // For calculating riding time
 					passengerStatus[0] = 1;
-					log.writelog("["+ time + "]" + "Taxi " + ID +  " picked up passenger, heading to destination");
+					log.writelog("["+ time + "]" + " Taxi " + ID +  " picked up passenger, heading to destination");
 					move();
 				}
 			}
@@ -109,8 +111,10 @@ public class TaxiObject {
 					log.writelog("["+ time + "]" + " Taxi " + ID +  " moving down");
 				}
 				else if( x == passenger[0][1][0] && y ==   passenger[0][1][1]){
-					dropPassenger(0);
+					passenger[0][3][1] = time - passenger[0][3][1];
 					log.writelog("["+ time + "]" + " Taxi " + ID +  " arrived at destination, dropping off passenger");
+					log.writelog("["+ time + "]" + " Passenger waited for " + passenger[0][3][0] +" minutes and rode for " + passenger[0][3][1] + " minutes");
+					dropPassenger(0);
 					move();
 				}
 			}
@@ -118,7 +122,7 @@ public class TaxiObject {
 	}
 	
 	public int[][][] getPassenger(){
-		int[][][] temp = new int[numPassenger][3][2];
+		int[][][] temp = new int[numPassenger][4][2];
 		for(int count = 0 ; count < numPassenger ; count++)
 			temp[count] = passenger[count].clone();
 	
@@ -136,7 +140,7 @@ public class TaxiObject {
 		return coords;
 	}
 	
-	public void setTime(long num){
+	public void setTime(int num){
 		time = num;
 	}
 }

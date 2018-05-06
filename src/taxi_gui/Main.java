@@ -44,7 +44,7 @@ public class Main extends Application {
 	private int[][][] list;
 	private int[][] Taxi;
 	private int[][] blockWeight;
-	private static long time = 0;
+	private static int time = 0;
 	
 	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
