@@ -49,12 +49,8 @@ public class Main extends Application {
 	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
 	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
-	GraphicsContext gc_box = canvas.getGraphicsContext2D();
-	GraphicsContext gc_blocks = canvas.getGraphicsContext2D();
-	int box_lineWidth = 4;
-	GraphicsContext gc_taxi = canvas.getGraphicsContext2D();
-	GraphicsContext gc_weight = canvas.getGraphicsContext2D();
 	GraphicsContext gc = canvas.getGraphicsContext2D();
+	int box_lineWidth = 4;
 	Random random = new Random();
 	//-------------------------------------------------------
 	
@@ -128,6 +124,13 @@ public class Main extends Application {
 		addTaxi.setTranslateY(winHeight * (520+100.0)/800);
 		root.getChildren().add(addTaxi);
 		
+		/*
+		Button print = new Button("Print Passenger Coordinates");
+		print.setTranslateX(winWidth/2*0.62);
+		print.setTranslateY(winHeight * (520+140.0)/800);
+		root.getChildren().add(print);
+		*/
+		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
 		Taxi = Taxii.getTaxiCoords();
@@ -193,6 +196,16 @@ public class Main extends Application {
 					}
 				}	
 		);
+		/*
+		print.setOnAction(
+				new EventHandler<ActionEvent>(){
+					@Override
+					public void handle(ActionEvent e) {
+						Taxii.printPassengerCoords();
+					}
+				}	
+		);
+		*/
 		
 	}//End of start
 	
@@ -216,42 +229,42 @@ public class Main extends Application {
 	}
 	
 	public void drawBoxes(){
-		gc_box.setStroke(Color.BLACK);
+		gc.setStroke(Color.BLACK);
 		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
 			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
-				gc_box.strokeRect(x, y, sqrWidth, sqrHeight);
+				gc.strokeRect(x, y, sqrWidth, sqrHeight);
 			}
 		}
-		gc_box.setLineWidth(box_lineWidth);
-		gc_box.strokeRect(0, 0, canvasWidth, canvasHeight);
+		gc.setLineWidth(box_lineWidth);
+		gc.strokeRect(0, 0, canvasWidth, canvasHeight);
 	}
 	
 	
 	public void drawBlocks(){
 		double size = Math.sqrt(numBlocks);
-		gc_blocks.setFill(Color.RED);
+		gc.setFill(Color.RED);
 		int[][] countBlock = new int[boxes][boxes];
 		for(int count = 0 ;count < numPassenger ; count++){
-			gc_blocks.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/size, sqrHeight/size);
+			gc.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/size, sqrHeight/size);
 			countBlock[list[count][2][0]-1][list[count][2][1]-1]++;
 		}
 	}
 	
 	public void drawTaxi(){
-		gc_taxi.setLineWidth(box_lineWidth/2);
-		gc_taxi.setStroke( Color.AQUA);
+		gc.setLineWidth(box_lineWidth/2);
+		gc.setStroke( Color.AQUA);
 		for(int count = 0 ; count < numTaxi ; count++){
-			gc_taxi.strokeRect((Taxi[count][0] - 1)*sqrWidth + box_lineWidth/2 , (Taxi[count][1] - 1)*sqrHeight + box_lineWidth/2, sqrWidth - box_lineWidth, sqrHeight - box_lineWidth);
+			gc.strokeRect((Taxi[count][0] - 1)*sqrWidth + box_lineWidth/2 , (Taxi[count][1] - 1)*sqrHeight + box_lineWidth/2, sqrWidth - box_lineWidth, sqrHeight - box_lineWidth);
 		}
 	}
 	
 	public void drawWeight(){
-		gc_weight.setStroke(Color.BLACK);
-		gc_weight.setFont(new Font("Verdana", 14));
-		gc_weight.setLineWidth(1);
+		gc.setStroke(Color.BLACK);
+		gc.setFont(new Font("Verdana", 14));
+		gc.setLineWidth(1);
 		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
 			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
-				gc_weight.strokeText( String.valueOf(blockWeight[count2][count]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
+				gc.strokeText( String.valueOf(blockWeight[count2][count]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
 			}
 		}
 	
