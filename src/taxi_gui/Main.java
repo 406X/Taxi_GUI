@@ -62,7 +62,7 @@ public class Main extends Application {
 	@Override
 	public  void start(Stage primaryStage) {
 		//GUI
-		primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time + " seconds");
+		primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time + " minutes");
 		
 		Group root = new Group();
 		Scene scene = new Scene(root);
@@ -157,7 +157,7 @@ public class Main extends Application {
 					drawWeight();
 					time+=1;
 					Taxii.setTime(time);
-					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" seconds");
+					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" minutes");
 				})
 		);
 		timeline.setCycleCount(INDEFINITE);
