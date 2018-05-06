@@ -1,8 +1,6 @@
 
 package taxi_gui;
 
-import java.util.Random;
-
 public class PassengerList {	
 	
 	private int maxPassenger = 10;
@@ -16,8 +14,8 @@ public class PassengerList {
 	// [ 0/1/2 ][ 0 ] - X coordinate
 	// [ 0/1/2 ][ 1 ] - Y coordinate
 	// [ 3 ] Time
-	// [ 3][ 0 ] Time passenger called
-	// [ 3][ 1 ] Time passenger picked up
+	// [ 3 ][ 0 ] Time passenger called
+	// [ 3 ][ 1 ] Time passenger picked up
 	
 	public PassengerList(int maxPassenger){
 		this.maxPassenger = maxPassenger;
@@ -25,7 +23,6 @@ public class PassengerList {
 	}
 	
 	public void addPassenger(int s_x , int s_y , int d_x , int d_y ){
-		if(numPassenger < maxPassenger){
 			passenger[numPassenger][0][0] = s_x;
 			passenger[numPassenger][0][1] = s_y;
 			passenger[numPassenger][1][0] = d_x;
@@ -34,7 +31,6 @@ public class PassengerList {
 			passenger[numPassenger][2][1] = s_y;
 			passenger[numPassenger][3][0] = time;
 			numPassenger++;
-		}
 	}
 	
 	
@@ -60,15 +56,14 @@ public class PassengerList {
 		}
 		
 		//store closest passenger in temp array
-		int[][] closestPassenger =  passenger[closestIndex];
+		int[][] closestPassenger =  passenger[closestIndex].clone();
 		
 		//remove from closest passenger from the list
 		for(int count = closestIndex ; count < maxPassenger - 1 ; count++){
 			passenger[count] = passenger[count+1];
 		}
 		numPassenger--;
-		
-		return closestPassenger;
+		return closestPassenger.clone();
 	}
 	
 	public int[][][] getPassengers(){
@@ -76,7 +71,7 @@ public class PassengerList {
 		for(int count = 0 ; count < numPassenger ; count++)
 			temp[count] = passenger[count].clone();
 	
-		return temp;
+		return temp.clone();
 	}
 	
 	public int getNumPassenger(){

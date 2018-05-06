@@ -4,7 +4,6 @@ package taxi_gui;
 //Taxi Simulator Backend
 
 import java.util.Arrays;
-import java.lang.Math;
 import java.util.Random;
 public class Taxi {
 	
@@ -40,31 +39,32 @@ public class Taxi {
 	
 	
 	public void add(int s_x ,int s_y ,int d_x ,int d_y){
-		int countBlock = 0;
-
-		int[][][] list = passengerList.getPassengers();
-		
-		for(int count = 0 ; count < list.length ; count++){
-			if( list[count][2][0] == s_x
-					&& list[count][2][1] == s_y ){
-				countBlock++;
-			}
-		}
-		
-		for(int count = 0 ; count < numTaxi ; count++){
-			list = taxi[count].getPassenger();
+		if( getNumPassenger() < maxPassenger ){
+			int countBlock = 0;
+			int[][][] list = passengerList.getPassengers();
 			
-			for(int count2 = 0 ; count2 < list.length ; count2++){
-				if( list[count2][2][0] == s_x
-						&& list[count2][2][1] == s_y ){
+			for(int count = 0 ; count < list.length ; count++){
+				if( list[count][2][0] == s_x
+						&& list[count][2][1] == s_y ){
 					countBlock++;
 				}
 			}
 			
-		}
-		
-		if(	countBlock < maxBlocks){
-			passengerList.addPassenger( s_x, s_y, d_x, d_y);
+			for(int count = 0 ; count < numTaxi ; count++){
+				list = taxi[count].getPassenger();
+				
+				for(int count2 = 0 ; count2 < list.length ; count2++){
+					if( list[count2][2][0] == s_x
+							&& list[count2][2][1] == s_y ){
+						countBlock++;
+					}
+				}
+				
+			}
+			
+			if(	countBlock < maxBlocks){
+				passengerList.addPassenger( s_x, s_y, d_x, d_y);
+			}
 		}
 	}
 	
