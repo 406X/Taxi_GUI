@@ -24,7 +24,7 @@ public class Main extends Application {
 	
 	
 	//Can be changed
-	private int boxes = 10;
+	private int boxes = 6; // High value for this parameter may cause program to freeze
 	private int maxTaxi = 5;
 	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
@@ -35,7 +35,7 @@ public class Main extends Application {
 	//-------------------------------------------------------
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
-	private int numBlocks = 9; // Must be square number
+	private int numBlocks = 4; // Must be square number
 	private int maxBlocks = numBlocks - taxiSize;
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
@@ -45,7 +45,7 @@ public class Main extends Application {
 	private int[][] Taxi;
 	private int[][] blockWeight;
 	private static int time = 0;
-	
+	private int[][] obstacle = new int[boxes][boxes];
 	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
 	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
@@ -131,17 +131,23 @@ public class Main extends Application {
 		root.getChildren().add(print);
 		*/
 		
+		//Test Variables
+		Taxii.setObstacle(4, 4);
+		Taxii.setObstacle(2, 3);
+		addTaxi();
+		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
 		Taxi = Taxii.getTaxiCoords();
 		blockWeight = Taxii.getBlockWeight();
-		
+		obstacle = Taxii.getOBstacle();
 		
 		//Draw 
 		drawBlocks();
 		drawBoxes();
 		drawTaxi();
 		drawWeight();
+		drawObstacle();
 		primaryStage.show();
 		
 		//Loop
@@ -158,13 +164,16 @@ public class Main extends Application {
 					drawBoxes();
 					drawTaxi();
 					drawWeight();
+					drawObstacle();
 					time+=1;
 					Taxii.setTime(time);
 					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" minutes");
 				})
 		);
+		//Set the loop to repeat indefinitely
 		timeline.setCycleCount(INDEFINITE);
 		
+		//Start the loop
 		timeline.play();
 		
 		//Button Action
@@ -215,7 +224,7 @@ public class Main extends Application {
 	}
 	
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
-		if(numPassenger<maxPassenger){
+		if(numPassenger<maxPassenger && obstacle[y_src][x_src]!=1){
 			Taxii.add(x_src, y_src, x_dest, y_dest);
 			numPassenger = Taxii.getNumPassenger();
 		}
@@ -288,4 +297,15 @@ public class Main extends Application {
 		return sqrHeight*blockY + sqrHeight*((int)((countBlock[blockX][blockY])/size))/size;
 	}
 	
+	
+	public void drawObstacle(){
+		double size = Math.sqrt(numBlocks);
+		gc.setFill(Color.GRAY);
+		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
+			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
+				if(obstacle[count][count2]==1)
+					gc.fillRect(x, y, sqrWidth, sqrHeight);
+			}
+		}
+	}
 }

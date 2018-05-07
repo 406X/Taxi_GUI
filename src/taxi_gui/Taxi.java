@@ -16,21 +16,19 @@ public class Taxi {
 	private int[][] blockWeight;
 	private int numBlocks = 4;
 	private int maxBlocks = numBlocks - taxiSize;
-	private static PassengerList passengerList = new PassengerList(maxPassenger);
 	private static TaxiObject[] taxi = new TaxiObject[maxTaxi];
 	private static Log log = new Log();
+	private int[][] obstacle = new int[boxes][boxes];
 	private static int time = 0;
 	
 	public Taxi(int maxPassenger, int taxiSize, int boxes, int numBlocks, int maxTaxi){
 		this.time = time;
 		this.maxPassenger = maxPassenger;
-		this.passengerList = new PassengerList(maxPassenger);
 		this.taxiSize = taxiSize;
 		this.boxes = boxes;
-		this.numBlocks = numBlocks;
-		maxBlocks = numBlocks - taxiSize;
-		blockWeight = new int[boxes+1][boxes+1];;
-
+		this.maxTaxi = maxTaxi;
+		obstacle = new int[boxes][boxes];
+		blockWeight = new int[boxes][boxes];
 		taxi = new TaxiObject[maxTaxi];
 		
 		for(int count = 0 ; count< boxes ;count++)
@@ -41,7 +39,7 @@ public class Taxi {
 	public void add(int s_x ,int s_y ,int d_x ,int d_y){
 		if( getNumPassenger() < maxPassenger ){
 			int countBlock = 0;
-			int[][][] list = passengerList.getPassengers();
+			int[][][] list = taxi[0].getPassengerList().getPassengers();
 			
 			for(int count = 0 ; count < list.length ; count++){
 				if( list[count][2][0] == s_x
@@ -63,18 +61,20 @@ public class Taxi {
 			}
 			
 			if(	countBlock < maxBlocks){
-				passengerList.addPassenger( s_x, s_y, d_x, d_y);
+				taxi[0].getPassengerList().addPassenger( s_x, s_y, d_x, d_y);
 			}
 		}
 	}
 	
 	public void addTaxi(){
-		taxi[numTaxi] = new TaxiObject(1,1,1,passengerList,log,numTaxi+1);
+		taxi[numTaxi] = new TaxiObject(1,1,1,new PassengerList(maxPassenger),log,numTaxi+1,boxes);
+		taxi[numTaxi].setBlockWeight(blockWeight);
+		taxi[numTaxi].setObstacle(obstacle);
 		numTaxi++;
 	}
 	
 	public int getNumPassenger(){
-		int num = passengerList.getNumPassenger() ;
+		int num = taxi[0].getPassengerList().getNumPassenger() ;
 		for( int count = 0 ; count < numTaxi ; count++)
 			num += taxi[count].getNumPassenger();
 		
@@ -93,14 +93,18 @@ public class Taxi {
 		Random random = new Random();
 
 		int countBlock = maxBlocks;
+		int srcx=0;
+		int srcy=0;
+		int dstx=0;
+		int dsty=0;
 		
-		while(countBlock >= maxBlocks){
+		while(countBlock >= maxBlocks || obstacle[srcy][srcx]==1){
 			countBlock=0;
-			int srcx = random.nextInt(boxes)+1;
-			int srcy = random.nextInt(boxes)+1;
+			srcx = random.nextInt(boxes)+1;
+			srcy = random.nextInt(boxes)+1;
 			
-			int dstx = random.nextInt(boxes)+1;
-			int dsty = random.nextInt(boxes)+1;
+			dstx = random.nextInt(boxes)+1;
+			dsty = random.nextInt(boxes)+1;
 			
 			while( dstx == srcx && dsty == srcy){
 				dstx = random.nextInt(boxes)+1;
@@ -108,7 +112,7 @@ public class Taxi {
 			}
 			
 			
-			int[][][] list = passengerList.getPassengers();
+			int[][][] list = taxi[0].getPassengerList().getPassengers();
 			
 			for(int count = 0 ; count < list.length ; count++){
 				if( list[count][2][0] == srcx
@@ -138,14 +142,15 @@ public class Taxi {
 	
 	}
 	
-	public int[][][] getPassengerCoords(){
-		int num = passengerList.getNumPassenger() ;
+	public int[][][] getPassengerCoords(){	
+		int num = taxi[0].getPassengerList().getNumPassenger();
+		
 		for( int count = 0 ; count < numTaxi ; count++)
 			num += taxi[count].getNumPassenger();
 		
 		int[][][] list = new int[ num][3][2];
 		
-		int[][][] temp = passengerList.getPassengers();
+		int[][][] temp = taxi[0].getPassengerList().getPassengers();
 		int count = 0;
 		for( int count2 = 0; count2 < temp.length ; count2++,count++)
 			list[count] = temp[count2];
@@ -160,8 +165,7 @@ public class Taxi {
 	}
 	
 	public int[][] getTaxiCoords(){
-		int[][] list = new int[numTaxi][2];
-		
+		int[][] list = new int[numTaxi][2];	
 		
 		for(int count = 0 ; count < numTaxi ; count++)
 			list[count] = taxi[count].getCoords();
@@ -170,7 +174,7 @@ public class Taxi {
 	}
 	
 	public void move(){
-		passengerList.setTime(time);
+		taxi[0].getPassengerList().setTime(time);
 		for(int count = 0 ; count < numTaxi ; count++){
 			taxi[count].move();
 			taxi[count].setTime(time);
@@ -182,4 +186,19 @@ public class Taxi {
 		time = num;
 	}
 	
+		
+	public void printPassengerCoords(){
+		int[][][] list = getPassengerCoords();
+		for(int count = 0 ; count < list.length ; count++)
+			System.out.println( list[count][2][0] + " " + list[count][2][1] );
+	}
+	
+	public void setObstacle(int x, int y){
+		obstacle[y-1][x-1] = 1;
+	}
+
+	public int[][] getOBstacle(){
+		return obstacle;
+	}
 }
+
