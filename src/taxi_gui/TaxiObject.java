@@ -185,10 +185,11 @@ public class TaxiObject {
 		if( (tempNumMove > numMove && numMove!=-1) )
 			return;
 		
-		if(exhaustive)
+		if(!exhaustive){
 			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
 				return;
-					
+		}
+		
 		moveX = 1;
 		moveY = 0;
 		
@@ -364,9 +365,10 @@ public class TaxiObject {
 		
 		iteration++;
 		
-		if(exhaustive)
+		if(!exhaustive){
 			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
 				return;
+		}
 		
 		moveX = 1;
 		moveY = 0;
