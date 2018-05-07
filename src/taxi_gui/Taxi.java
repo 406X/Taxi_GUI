@@ -93,12 +93,12 @@ public class Taxi {
 		Random random = new Random();
 
 		int countBlock = maxBlocks;
-		int srcx=0;
-		int srcy=0;
-		int dstx=0;
-		int dsty=0;
+		int srcx=random.nextInt(boxes)+1;
+		int srcy=random.nextInt(boxes)+1;
+		int dstx=random.nextInt(boxes)+1;
+		int dsty=random.nextInt(boxes)+1;
 		
-		while(countBlock >= maxBlocks || obstacle[srcy][srcx]==1 || obstacle[dsty][dstx]==1 ){
+		while(countBlock >= maxBlocks || obstacle[srcy-1][srcx-1]==1 || obstacle[dsty-1][dstx-1]==1 ){
 			countBlock=0;
 			srcx = random.nextInt(boxes)+1;
 			srcy = random.nextInt(boxes)+1;
@@ -133,7 +133,7 @@ public class Taxi {
 				
 			}
 			
-			if(	countBlock < maxBlocks){
+			if(	countBlock < maxBlocks && !(obstacle[srcy-1][srcx-1]==1) && !(obstacle[dsty-1][dstx-1]==1)) {
 				add( srcx,srcy,dstx,dsty);
 				break;
 			}
