@@ -98,7 +98,7 @@ public class Taxi {
 		int dstx=0;
 		int dsty=0;
 		
-		while(countBlock >= maxBlocks || obstacle[srcy][srcx]==1){
+		while(countBlock >= maxBlocks || obstacle[srcy][srcx]==1 || obstacle[dsty][dstx]==1 ){
 			countBlock=0;
 			srcx = random.nextInt(boxes)+1;
 			srcy = random.nextInt(boxes)+1;
@@ -180,6 +180,7 @@ public class Taxi {
 			taxi[count].setTime(time);
 		}
 		log.flush();
+		
 	}
 	
 		public void setTime(int num){
@@ -209,6 +210,23 @@ public class Taxi {
 		
 		if( obstacle[y][x]!=1){
 			blockWeight[y][x]= rand.nextInt(maxWeight-1)+2;
+		}
+		else
+			num++;
+		
+		num--;
+	}
+	
+	}
+	
+	public void generateRandomObstacles(int num){
+	Random rand = new Random();
+	while(num>0){
+		int x = rand.nextInt(boxes);
+		int y = rand.nextInt(boxes);
+		
+		if(blockWeight[y][x]==1 && !( x==0 && y==0) ){
+			obstacle[y][x]= 1;
 		}
 		else
 			num++;
