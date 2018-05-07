@@ -23,7 +23,6 @@ public class PassengerList {
 	}
 	
 	public void addPassenger(int s_x , int s_y , int d_x , int d_y ){
-		System.out.println(numPassenger);
 		if(numPassenger<maxPassenger && empty(passenger[numPassenger])){
 			numPassenger++;
 			passenger[numPassenger-1][0][0] = s_x;
