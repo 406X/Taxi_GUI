@@ -1,5 +1,6 @@
 package taxi_gui;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TaxiObject {
 	private ArrayList<Integer[]> arrList = new ArrayList();
@@ -14,10 +15,14 @@ public class TaxiObject {
 	private int[][] bWeight;
 	private int[][] obstacle;
 	private int[][][] passenger = new int[maxPassenger][4][2];
-	private int searchDepth = 20; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
+	private int searchDepth = 30; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
 								  //Increasing this will increase the time taken to find a route
 	private static int iteration = 0;
-	private int maxIteration = 20000; //Increase this to get better routes
+	private int maxIteration = 40000; //Increase this to get better routes
+	
+	private boolean exhaustive = true; //If set to true, the algorithm will search everything and ignore searchDepth and maxIteration
+									   //Thus increasing search time tremendously
+									   //In exchange, the generated path is the best possible
 	// passenger[ passengerID ]
 	// [0] - Source Coordinate
 	// [1] - Destination Coordinate
@@ -95,7 +100,7 @@ public class TaxiObject {
 				}
 				else{
 					//Move
-					
+					//System.out.println( "X:" + x + " Y:" + y);
 					if(weight < bWeight[y-1][x-1])
 						weight++;
 					else{
@@ -137,6 +142,7 @@ public class TaxiObject {
 				}
 				else{
 					//Move
+					//System.out.println( "X:" + x + " Y:" + y);
 					if(weight < bWeight[y-1][x-1])
 						weight++;
 					else{
@@ -163,8 +169,9 @@ public class TaxiObject {
 	}
 	
 	public void calcPath(int destX, int destY){
-		iteration = 0;
+		iteration = 1;
 		ArrayList<Integer[]> tempList = new ArrayList();
+		ArrayList<Integer[]> visited = new ArrayList();
 		int tempNumMove = 0;
 		int tempNumMove2;
 		int currentX = x;
@@ -175,11 +182,12 @@ public class TaxiObject {
 		
 		
 		
-		if( (tempNumMove > numMove && numMove!=-1) || tempNumMove > searchDepth )
+		if( (tempNumMove > numMove && numMove!=-1) )
 			return;
 		
-		if( iteration>maxIteration && numMove!=-1)
-			return;
+		if(exhaustive)
+			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
+				return;
 					
 		moveX = 1;
 		moveY = 0;
@@ -196,13 +204,25 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -220,13 +240,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -244,13 +274,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -268,13 +308,25 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
+				
+				
 			}
 		}
 	}
@@ -287,18 +339,34 @@ public class TaxiObject {
 		return temp;
 	}
 	
-	public void calcPath(ArrayList tempList , int tempNumMove, int currentX, int currentY , int destX , int destY){
+	public boolean containsArr(ArrayList<Integer[]> arrList,Integer[] arr){
+		for(int count =0 ; count < arrList.size() ; count++){
+		Integer[] arr2 = arrList.get(count);
+		
+		if(Arrays.equals(arr2, arr))
+				return true;
+		}
+		return false;
+	}
+	
+	public void calcPath(ArrayList<Integer[]> tempList , int tempNumMove, int currentX, int currentY , int destX , int destY, ArrayList<Integer[]> visited){
+		//Integer[] lastVisited = visited.get(visited.size()-1);
+		//System.out.println( "Last visited: X: " + lastVisited[0] + " Y: " + lastVisited[1]);
+
 		//System.out.println("Iteration: " + iteration + " Depth: "+tempNumMove);
 		int moveX = 0;
 		int moveY = 0;
 		int tempNumMove2;	
 		//System.out.println(tempNumMove);
 		
-		if( (tempNumMove > numMove && numMove!=-1) || tempNumMove > searchDepth )
+		if( (tempNumMove > numMove && numMove!=-1) )
 			return;
 		
-		if(iteration>maxIteration && numMove!=-1)
-			return;
+		iteration++;
+		
+		if(exhaustive)
+			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
+				return;
 		
 		moveX = 1;
 		moveY = 0;
@@ -314,13 +382,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -338,13 +416,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -362,13 +450,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
@@ -386,13 +484,23 @@ public class TaxiObject {
 				return;
 			}
 			else{
-				Integer[] move = new Integer[2];
-				move[0] = moveX;
-				move[1] = moveY;
-				ArrayList temp = copyArrList(tempList);
-				temp.add(move);
-				iteration++;
-				calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY );
+				ArrayList<Integer[]> tempVisited = copyArrList(visited);
+				Integer[] currentVisit = new Integer[2];
+				currentVisit[0] = currentX;
+				currentVisit[1] = currentY;
+				Integer[] nextVisit = new Integer[2];
+				nextVisit[0] = currentX + moveX;
+				nextVisit[1] = currentY + moveY;
+				
+				if(!containsArr( visited,nextVisit)){
+					Integer[] move = new Integer[2];
+					move[0] = moveX;
+					move[1] = moveY;
+					ArrayList<Integer[]> temp = copyArrList(tempList);
+					temp.add(move);
+					tempVisited.add(currentVisit);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+				}
 			}
 		}
 		
