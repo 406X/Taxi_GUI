@@ -98,7 +98,7 @@ public class Taxi {
 		int dstx=random.nextInt(boxes)+1;
 		int dsty=random.nextInt(boxes)+1;
 		
-		while(countBlock >= maxBlocks || obstacle[srcy-1][srcx-1]==1 || obstacle[dsty-1][dstx-1]==1 ){
+		while(countBlock >= maxBlocks || obstacle[srcy-1][srcx-1]==1 || obstacle[dsty-1][dstx-1]==1 || ( srcx == dstx && srcy == dsty)){
 			countBlock=0;
 			srcx = random.nextInt(boxes)+1;
 			srcy = random.nextInt(boxes)+1;
@@ -133,7 +133,7 @@ public class Taxi {
 				
 			}
 			
-			if(	countBlock < maxBlocks && !(obstacle[srcy-1][srcx-1]==1) && !(obstacle[dsty-1][dstx-1]==1)) {
+			if(	countBlock < maxBlocks && !(obstacle[srcy-1][srcx-1]==1) && !(obstacle[dsty-1][dstx-1]==1) && !( srcx == dstx && srcy == dsty)) {
 				add( srcx,srcy,dstx,dsty);
 				break;
 			}
@@ -161,7 +161,7 @@ public class Taxi {
 				list[count] = temp[count2];
 		}
 		
-		return list;
+		return list.clone();
 	}
 	
 	public int[][] getTaxiCoords(){
