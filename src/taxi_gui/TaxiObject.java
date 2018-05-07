@@ -15,12 +15,17 @@ public class TaxiObject {
 	private int[][] bWeight;
 	private int[][] obstacle;
 	private int[][][] passenger = new int[maxPassenger][4][2];
-	private int searchDepth = 30; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
-								  //Increasing this will increase the time taken to find a route
 	private static int iteration = 0;
-	private int maxIteration = 40000; //Increase this to get better routes
 	
-	private boolean exhaustive = true; //If set to true, the algorithm will search everything and ignore searchDepth and maxIteration
+	private boolean enableSearchDepth = true;
+	private int searchDepth = 25; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
+								  //Increasing this will increase the time taken to find a route
+	
+	private boolean enableIterationThreshold = false;
+	private int iterationThreshold = 40000; //Increase this to get better routes
+
+	
+	private boolean exhaustive = true; //If set to true, the algorithm will search everything and ignore searchDepth and iterationThreshold
 									   //Thus increasing search time tremendously
 									   //In exchange, the generated path is the best possible
 	// passenger[ passengerID ]
@@ -186,7 +191,7 @@ public class TaxiObject {
 			return;
 		
 		if(!exhaustive){
-			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
+			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( tempNumMove > searchDepth && enableSearchDepth) )
 				return;
 		}
 		
@@ -366,7 +371,7 @@ public class TaxiObject {
 		iteration++;
 		
 		if(!exhaustive){
-			if( iteration>maxIteration && numMove!=-1 || tempNumMove > searchDepth)
+			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( tempNumMove > searchDepth && enableSearchDepth) )
 				return;
 		}
 		
