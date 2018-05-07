@@ -200,5 +200,22 @@ public class Taxi {
 	public int[][] getOBstacle(){
 		return obstacle;
 	}
+	
+	public void generateRandomWeights(int num,int maxWeight){
+	Random rand = new Random();
+	while(num>0){
+		int x = rand.nextInt(boxes);
+		int y = rand.nextInt(boxes);
+		
+		if( obstacle[y][x]!=1){
+			blockWeight[y][x]= rand.nextInt(maxWeight-1)+2;
+		}
+		else
+			num++;
+		
+		num--;
+	}
+	
+	}
 }
 

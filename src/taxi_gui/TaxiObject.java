@@ -8,7 +8,7 @@ public class TaxiObject {
 	private static Log log = new Log();
 	private int numMove=-1;
 	private static int time = 0;
-	private int weight = 0;
+	private int weight = 1;
 	private int ID;
 	private int boxes = 0;
 	private int[][] bWeight;
@@ -92,19 +92,25 @@ public class TaxiObject {
 				}
 				else{
 					//Move
-					Integer[] move = arrList.remove(0);
-					x+=move[0];
-					y+=move[1];
 					
-
-					if(move[0]==1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving right");
-					else if(move[0]==-1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving left");
-					else if(move[1]==1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving down");
-					else if(move[1]==-1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving up");
+					if(weight < bWeight[y-1][x-1])
+						weight++;
+					else{
+						weight=1;
+						Integer[] move = arrList.remove(0);
+						x+=move[0];
+						y+=move[1];
+						
+						
+						if(move[0]==1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving right");
+						else if(move[0]==-1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving left");
+						else if(move[1]==1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving down");
+						else if(move[1]==-1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving up");
+					}
 					
 				}
 			}
@@ -128,20 +134,25 @@ public class TaxiObject {
 				}
 				else{
 					//Move
-					Integer[] move = arrList.remove(0);
-					passenger[0][2][0]+=move[0];
-					passenger[0][2][1]+=move[1];
-					x+=move[0];
-					y+=move[1];
-					
-					if(move[0]==1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving right");
-					else if(move[0]==-1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving left");
-					else if(move[1]==1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving down");
-					else if(move[1]==-1)
-						log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving up");
+					if(weight < bWeight[y-1][x-1])
+						weight++;
+					else{
+						weight=1;
+						Integer[] move = arrList.remove(0);
+						passenger[0][2][0]+=move[0];
+						passenger[0][2][1]+=move[1];
+						x+=move[0];
+						y+=move[1];
+						
+						if(move[0]==1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving right");
+						else if(move[0]==-1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving left");
+						else if(move[1]==1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving down");
+						else if(move[1]==-1)
+							log.writelog("["+ time + "]" + " Taxi " + ID +  " is moving up");
+					}
 				}
 
 			}

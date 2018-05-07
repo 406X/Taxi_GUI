@@ -135,6 +135,7 @@ public class Main extends Application {
 		Taxii.setObstacle(4, 4);
 		Taxii.setObstacle(2, 3);
 		addTaxi();
+		Taxii.generateRandomWeights(8,3);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
@@ -273,7 +274,7 @@ public class Main extends Application {
 		gc.setLineWidth(1);
 		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
 			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
-				gc.strokeText( String.valueOf(blockWeight[count2][count]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
+				gc.strokeText( String.valueOf(blockWeight[count][count2]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
 			}
 		}
 	
