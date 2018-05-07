@@ -23,16 +23,25 @@ public class PassengerList {
 	}
 	
 	public void addPassenger(int s_x , int s_y , int d_x , int d_y ){
-			passenger[numPassenger][0][0] = s_x;
-			passenger[numPassenger][0][1] = s_y;
-			passenger[numPassenger][1][0] = d_x;
-			passenger[numPassenger][1][1] = d_y;
-			passenger[numPassenger][2][0] = s_x;
-			passenger[numPassenger][2][1] = s_y;
-			passenger[numPassenger][3][0] = time;
+		System.out.println(numPassenger);
+		if(numPassenger<maxPassenger && empty(passenger[numPassenger])){
 			numPassenger++;
+			passenger[numPassenger-1][0][0] = s_x;
+			passenger[numPassenger-1][0][1] = s_y;
+			passenger[numPassenger-1][1][0] = d_x;
+			passenger[numPassenger-1][1][1] = d_y;
+			passenger[numPassenger-1][2][0] = s_x;
+			passenger[numPassenger-1][2][1] = s_y;
+			passenger[numPassenger-1][3][0] = time;
+		}
 	}
 	
+	public boolean empty(int[][] passenger){
+		if( passenger[0][0] == 0 && passenger[0][1] == 0 && passenger[1][1] == 0 && passenger[1][0] == 0 && passenger[2][1] == 0 && passenger[2][0] == 0)
+			return true;
+		else
+			return false;
+	}
 	
 	public int[][] getClosestPassenger(int x , int y){
 		double[] distance = new double[numPassenger];
@@ -59,8 +68,10 @@ public class PassengerList {
 		int[][] closestPassenger =  passenger[closestIndex].clone();
 		
 		//remove from closest passenger from the list
+		passenger[closestIndex] = new int[4][2];
 		for(int count = closestIndex ; count < maxPassenger - 1 ; count++){
 			passenger[count] = passenger[count+1];
+			passenger[count+1] = new int[4][2];
 		}
 		numPassenger--;
 		return closestPassenger.clone();
