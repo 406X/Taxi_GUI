@@ -7,7 +7,7 @@ public class TaxiObject {
 	private int numPassenger = 0;
 	private static Log log = new Log();
 	private int numMove=-1;
-	private int time = 0;
+	private static int time = 0;
 	private int weight = 0;
 	private int ID;
 	private int boxes = 0;
