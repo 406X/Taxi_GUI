@@ -68,7 +68,7 @@ public class Taxi {
 	}
 	
 	public void addTaxi(){
-		taxi[numTaxi] = new TaxiObject(1,1,1,new PassengerList(maxPassenger),log,numTaxi+1,boxes);
+		taxi[numTaxi] = new TaxiObject(maxPassenger,1,1,log,numTaxi+1,boxes);
 		taxi[numTaxi].setBlockWeight(blockWeight);
 		taxi[numTaxi].setObstacle(obstacle);
 		numTaxi++;

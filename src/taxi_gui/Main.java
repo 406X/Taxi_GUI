@@ -24,7 +24,7 @@ public class Main extends Application {
 	
 	
 	//Can be changed
-	private int boxes = 10; // High value for this parameter may cause program to freeze
+	private int boxes = 6; // High value for this parameter may cause program to freeze
 	private int maxTaxi = 5;
 	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
@@ -134,9 +134,9 @@ public class Main extends Application {
 		*/
 		
 		//Test Variables
-		Taxii.generateRandomObstacles(10);
+		Taxii.generateRandomObstacles(numBlocks);
 		addTaxi();
-		Taxii.generateRandomWeights(8,3);
+		Taxii.generateRandomWeights(numBlocks*2,3);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
@@ -145,6 +145,9 @@ public class Main extends Application {
 		obstacle = Taxii.getOBstacle();
 		
 		//Draw 
+		
+		gc.setFill( Color.LIGHTSTEELBLUE);
+		gc.fillRect(0, 0, canvasWidth, canvasHeight);
 		drawBlocks();
 		
 		drawWeight();
@@ -152,12 +155,13 @@ public class Main extends Application {
 		drawBoxes();
 		drawTaxi();
 		primaryStage.show();
+		scene.setFill(Color.AZURE);
 		
 		//Loop
 		Timeline timeline = new Timeline(
 				new KeyFrame(Duration.seconds(1), e -> {
 						maxBlocks = numBlocks - taxiSize*Taxii.getNumTaxi();
-						gc.setFill( Color.WHITE);
+						gc.setFill( Color.LIGHTSTEELBLUE);
 						gc.fillRect(0, 0, canvasWidth, canvasHeight);
 						Taxii.move();	
 						numPassenger = Taxii.getNumPassenger();
@@ -181,16 +185,21 @@ public class Main extends Application {
 		timeline.play();
 		
 		//Button Action
-		addPassenger.setOnAction( 
+		addPassenger.setOnAction(
 				new EventHandler<ActionEvent>(){
 					@Override
 					public void handle(ActionEvent e) {
+						if( !tf_srcx.getText().isEmpty() && !tf_srcy.getText().isEmpty() && !tf_dstx.getText().isEmpty()  && !tf_dsty.getText().isEmpty() ){
+							
 							addPassenger(Integer.valueOf(tf_srcx.getText())
 									,Integer.valueOf(tf_srcy.getText())
 									,Integer.valueOf(tf_dstx.getText())
 									,Integer.valueOf(tf_dsty.getText()));
+							
+						}
 					}
-		});
+				}
+		);
 		
 		addRandPassenger.setOnAction(
 				new EventHandler<ActionEvent>(){
@@ -209,6 +218,7 @@ public class Main extends Application {
 					}
 				}	
 		);
+		
 		/*
 		print.setOnAction(
 				new EventHandler<ActionEvent>(){
@@ -255,7 +265,7 @@ public class Main extends Application {
 	
 	public void drawBlocks(){
 		double size = Math.sqrt(numBlocks);
-		gc.setFill(Color.RED);
+		gc.setFill(Color.AQUAMARINE);
 		int[][] countBlock = new int[boxes][boxes];
 		for(int count = 0 ;count < numPassenger ; count++){
 			gc.fillRect( convertX(list[count][2][0],list[count][2][1],countBlock) , convertY(list[count][2][0],list[count][2][1],countBlock), sqrWidth/size, sqrHeight/size);
@@ -264,8 +274,8 @@ public class Main extends Application {
 	}
 	
 	public void drawTaxi(){
-		gc.setLineWidth(box_lineWidth/2);
-		gc.setStroke( Color.AQUA);
+		gc.setLineWidth(box_lineWidth*0.5);
+		gc.setStroke( Color.MAGENTA);
 		for(int count = 0 ; count < numTaxi ; count++){
 			gc.strokeRect((Taxi[count][0] - 1)*sqrWidth + box_lineWidth/2 , (Taxi[count][1] - 1)*sqrHeight + box_lineWidth/2, sqrWidth - box_lineWidth, sqrHeight - box_lineWidth);
 		}
@@ -277,7 +287,7 @@ public class Main extends Application {
 		gc.setLineWidth(1);
 		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
 			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
-				gc.strokeText( String.valueOf(blockWeight[count][count2]), count2*sqrWidth + 0.75*sqrWidth, count*sqrHeight+ 0.85*sqrHeight);
+				gc.strokeText( String.valueOf(blockWeight[count][count2]), count2*sqrWidth + 0.71*sqrWidth, count*sqrHeight+ 0.84*sqrHeight);
 			}
 		}
 	

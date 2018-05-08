@@ -47,13 +47,13 @@ public class TaxiObject {
 	
 	private static PassengerList passengerList;
 	
-	public TaxiObject(int maxPassenger, int x , int y, PassengerList pList,Log log,int id, int boxes){
+	public TaxiObject(int maxPassenger, int x , int y,Log log,int id, int boxes){
 		this.log = log;
 		this.ID = id;
 		this.boxes = boxes;
 		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		if(id==1){
-			passengerList = pList;
+			passengerList = new PassengerList(maxPassenger);
 		}
 		this.maxPassenger = maxPassenger;
 		passenger = new int[maxPassenger][4][2];
