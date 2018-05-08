@@ -24,18 +24,19 @@ public class Main extends Application {
 	
 	
 	//Can be changed
-	private int boxes = 6; // High value for this parameter may cause program to freeze
+	private int boxes = 10; // High value for this parameter may cause program to freeze
 	private int maxTaxi = 5;
 	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
-	private int taxiSize = 1;
+	
 	
 	//Do not change
 	//-------------------------------------------------------
+	private int taxiSize = 1;
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
-	private int numBlocks = 4; // Must be square number
+	private int numBlocks = 9; // Must be square number
 	private int maxBlocks = numBlocks - taxiSize;
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
@@ -57,6 +58,7 @@ public class Main extends Application {
 	
 	@Override
 	public  void start(Stage primaryStage) {
+
 		//GUI
 		primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time + " minutes");
 		
@@ -132,8 +134,7 @@ public class Main extends Application {
 		*/
 		
 		//Test Variables
-		Taxii.setObstacle(4, 4);
-		Taxii.setObstacle(2, 3);
+		Taxii.generateRandomObstacles(10);
 		addTaxi();
 		Taxii.generateRandomWeights(8,3);
 		
@@ -145,30 +146,32 @@ public class Main extends Application {
 		
 		//Draw 
 		drawBlocks();
-		drawBoxes();
-		drawTaxi();
+		
 		drawWeight();
 		drawObstacle();
+		drawBoxes();
+		drawTaxi();
 		primaryStage.show();
 		
 		//Loop
 		Timeline timeline = new Timeline(
 				new KeyFrame(Duration.seconds(1), e -> {
-					gc.setFill( Color.WHITE);
-					gc.fillRect(0, 0, canvasWidth, canvasHeight);
-					Taxii.move();
-					numPassenger = Taxii.getNumPassenger();
-					list = Taxii.getPassengerCoords();
-					Taxi = Taxii.getTaxiCoords();
-					
-					drawBlocks();
-					drawBoxes();
-					drawTaxi();
-					drawWeight();
-					drawObstacle();
-					time+=1;
-					Taxii.setTime(time);
-					primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" minutes");
+						maxBlocks = numBlocks - taxiSize*Taxii.getNumTaxi();
+						gc.setFill( Color.WHITE);
+						gc.fillRect(0, 0, canvasWidth, canvasHeight);
+						Taxii.move();	
+						numPassenger = Taxii.getNumPassenger();
+						list = Taxii.getPassengerCoords();
+						Taxi = Taxii.getTaxiCoords();
+						
+						drawBlocks();
+						drawWeight();
+						drawObstacle();
+						drawBoxes();
+						drawTaxi();
+						time+=1;
+						Taxii.setTime(time);
+						primaryStage.setTitle("Taxii Simulator! Time Elapsed: " + time +" minutes");
 				})
 		);
 		//Set the loop to repeat indefinitely
@@ -182,10 +185,10 @@ public class Main extends Application {
 				new EventHandler<ActionEvent>(){
 					@Override
 					public void handle(ActionEvent e) {
-						addPassenger(Integer.valueOf(tf_srcx.getText())
-								,Integer.valueOf(tf_srcy.getText())
-								,Integer.valueOf(tf_dstx.getText())
-								,Integer.valueOf(tf_dsty.getText()));
+							addPassenger(Integer.valueOf(tf_srcx.getText())
+									,Integer.valueOf(tf_srcy.getText())
+									,Integer.valueOf(tf_dstx.getText())
+									,Integer.valueOf(tf_dsty.getText()));
 					}
 		});
 		
@@ -193,7 +196,7 @@ public class Main extends Application {
 				new EventHandler<ActionEvent>(){
 					@Override
 					public void handle(ActionEvent e) {
-						Taxii.addRandomPassenger();
+							Taxii.addRandomPassenger();
 					}
 				});
 		
@@ -225,7 +228,7 @@ public class Main extends Application {
 	}
 	
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
-		if(numPassenger<maxPassenger && obstacle[y_src][x_src]!=1){
+		if(numPassenger<maxPassenger && obstacle[y_src-1][x_src-1]!=1){
 			Taxii.add(x_src, y_src, x_dest, y_dest);
 			numPassenger = Taxii.getNumPassenger();
 		}
@@ -309,4 +312,6 @@ public class Main extends Application {
 			}
 		}
 	}
+	
+	
 }

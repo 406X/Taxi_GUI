@@ -27,6 +27,7 @@ public class Taxi {
 		this.taxiSize = taxiSize;
 		this.boxes = boxes;
 		this.maxTaxi = maxTaxi;
+		this.numBlocks = numBlocks;
 		obstacle = new int[boxes][boxes];
 		blockWeight = new int[boxes][boxes];
 		taxi = new TaxiObject[maxTaxi];
@@ -174,6 +175,7 @@ public class Taxi {
 	}
 	
 	public void move(){
+		maxBlocks = numBlocks - taxiSize*getNumTaxi();
 		taxi[0].getPassengerList().setTime(time);
 		for(int count = 0 ; count < numTaxi ; count++){
 			taxi[count].move();
@@ -234,6 +236,10 @@ public class Taxi {
 		num--;
 	}
 	
+	}
+	
+	public int getNumTaxi(){
+		return numTaxi;
 	}
 }
 

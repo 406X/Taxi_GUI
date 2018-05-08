@@ -18,7 +18,7 @@ public class TaxiObject {
 	private static int iteration = 0;
 	
 	private boolean enableSearchDepth = true;
-	private int searchDepth = 25; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
+	private int searchDepth = 40; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
 								  //Increasing this will increase the time taken to find a route
 	
 	private boolean enableIterationThreshold = false;
