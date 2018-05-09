@@ -24,7 +24,7 @@ public class Main extends Application {
 	
 	
 	//Can be changed
-	private int boxes = 6; // High value for this parameter may cause program to freeze
+	private int boxes = 10; // High value for this parameter may cause program to freeze
 	private int maxTaxi = 5;
 	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450

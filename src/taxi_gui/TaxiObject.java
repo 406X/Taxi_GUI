@@ -17,7 +17,10 @@ public class TaxiObject {
 	private int[][] bWeight;
 	private int[][] obstacle;
 	private int[][][] passenger = new int[maxPassenger][4][2];
+	private int initialDepth = boxes;
 	private static int iteration = 0;
+	
+	private boolean enableIterativeDeepening = true;
 	
 	private boolean enableSearchDepth = true;
 	private int searchDepth = 40; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
@@ -54,6 +57,7 @@ public class TaxiObject {
 		this.ID = id;
 		this.boxes = boxes;
 		this.maxBlocks = maxBlocks;
+		this.initialDepth = boxes;
 		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		if(id==1){
 			passengerList = new PassengerList(maxPassenger);
@@ -64,6 +68,7 @@ public class TaxiObject {
 		this.x = x;
 		this.y = y;
 		numTaxi++;
+		
 	}
 	
 	public void addPassenger(int[][] passenger){
@@ -92,8 +97,16 @@ public class TaxiObject {
 		else{
 			if(passengerStatus[0] == 0){
 				if(numMove==-1){
+					if(enableIterativeDeepening)
+						searchDepth = initialDepth;
+					
 					calcPath( passenger[0][0][0] , passenger[0][0][1]);
-					if(numMove==-1)
+					
+					while(enableIterativeDeepening && numMove==-1){
+						searchDepth++;
+						calcPath( passenger[0][0][0] , passenger[0][0][1]);
+					}
+					if(!enableIterativeDeepening && numMove==-1)
 						System.out.println( "Taxi " + ID + ": No solution found, try increasing search depth.");
 					else
 						move();
@@ -133,9 +146,17 @@ public class TaxiObject {
 			}
 			else{
 				if(numMove==-1){
+					if(enableIterativeDeepening)
+						searchDepth = initialDepth;
+					
 					calcPath( passenger[0][1][0] , passenger[0][1][1]);
-					if(numMove==-1)
-						System.out.println("["+ time + "]" + " Taxi " + ID + ": No solution found, try increasing search depth.");
+					
+					while(enableIterativeDeepening && numMove==-1){
+						searchDepth++;
+						calcPath( passenger[0][1][0] , passenger[0][1][1]);
+					}
+					if(!enableIterativeDeepening && numMove==-1)
+						System.out.println( "Taxi " + ID + ": No solution found, try increasing search depth.");
 					else
 						move();
 				}
@@ -186,7 +207,7 @@ public class TaxiObject {
 		int tempNumMove2;
 		int currentX = x;
 		int currentY = y;
-		
+		int depth = 1;
 		int moveX = 0;
 		int moveY = 0;
 		
@@ -197,6 +218,10 @@ public class TaxiObject {
 		
 		if(!exhaustive){
 			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( tempNumMove > searchDepth && enableSearchDepth) )
+				return;
+		}
+		else if(enableIterativeDeepening){
+			if( depth > searchDepth  )
 				return;
 		}
 		
@@ -233,7 +258,7 @@ public class TaxiObject {
 					temp.add(move);
 					tempVisited.add(currentVisit);
 					queue.add(nextVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -267,7 +292,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -301,7 +326,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -335,7 +360,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 				
 				
@@ -390,7 +415,7 @@ public class TaxiObject {
 		return false;
 	}
 	
-	public void calcPath(ArrayList<Integer[]> tempList , int tempNumMove, int currentX, int currentY , int destX , int destY, ArrayList<Integer[]> visited){
+	public void calcPath(ArrayList<Integer[]> tempList , int tempNumMove, int currentX, int currentY , int destX , int destY, ArrayList<Integer[]> visited, int depth){
 		//Integer[] lastVisited = visited.get(visited.size()-1);
 		//System.out.println( "Last visited: X: " + lastVisited[0] + " Y: " + lastVisited[1]);
 
@@ -399,14 +424,18 @@ public class TaxiObject {
 		int moveY = 0;
 		int tempNumMove2;	
 		//System.out.println(tempNumMove);
-		
+		depth++;
 		if( (tempNumMove > numMove && numMove!=-1) )
 			return;
 		
 		iteration++;
 		
 		if(!exhaustive){
-			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( tempNumMove > searchDepth && enableSearchDepth) )
+			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( depth > searchDepth && enableSearchDepth) )
+				return;
+		}
+		else if(enableIterativeDeepening){
+			if( depth > searchDepth  )
 				return;
 		}
 		
@@ -439,7 +468,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -473,7 +502,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -507,7 +536,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);
 				}
 			}
 		}
@@ -541,8 +570,7 @@ public class TaxiObject {
 					ArrayList<Integer[]> temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
-					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
-				}
+					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited,depth);				}
 			}
 		}
 		
