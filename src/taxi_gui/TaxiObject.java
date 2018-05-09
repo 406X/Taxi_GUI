@@ -53,7 +53,8 @@ public class TaxiObject {
 		this.ID = id;
 		this.boxes = boxes;
 		this.maxBlocks = maxBlocks;
-		this.initialDepth = boxes;
+		if(initialDepth==0)
+			this.initialDepth = boxes;
 		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		if(id==1){
 			passengerList = new PassengerList(maxPassenger);
