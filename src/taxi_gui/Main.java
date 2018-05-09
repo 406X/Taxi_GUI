@@ -29,7 +29,9 @@ public class Main extends Application {
 	private int  maxPassenger = 40;
 	private int winWidth = 450; //Default: 450
 	private int winHeight = 800; //Default: 800
-	
+	private int numObstacles = 10;
+	private int numWeightedBlocks = 10;
+	private int maxBlockWeight = 3;
 	
 	//Do not change
 	//-------------------------------------------------------
@@ -133,9 +135,9 @@ public class Main extends Application {
 		*/
 		
 		//Test Variables
-		Taxii.generateRandomObstacles(maxBlocks);
+		Taxii.generateRandomObstacles(numObstacles);
 		addTaxi();
-		Taxii.generateRandomWeights(maxBlocks*2,3);
+		Taxii.generateRandomWeights(numWeightedBlocks,maxBlockWeight);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
