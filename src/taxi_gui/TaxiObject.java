@@ -17,11 +17,11 @@ public class TaxiObject {
 	private int[][] bWeight;
 	private int[][] obstacle;
 	private int[][][] passenger = new int[maxPassenger][4][2];
-	private int initialDepth = boxes;
-	private static int iteration = 0;
 	
 	private boolean enableIterativeDeepening = true; // Much more efficient for small search space
+	private int initialDepth = 3; 
 	private int deepeneningPerIteration = 2;
+	
 	private boolean enableSearchDepth = false;
 	private int searchDepth = 40; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
 								  //Increasing this will increase the time taken to find a route
@@ -196,7 +196,6 @@ public class TaxiObject {
 	}
 	
 	public void calcPath(int destX, int destY){
-		iteration = 1;
 		ArrayList<Integer[]> tempList = new ArrayList();
 		ArrayList<Integer[]> visited = new ArrayList();
 		ArrayList<Integer[]> queue = new ArrayList();
@@ -416,7 +415,6 @@ public class TaxiObject {
 		//Integer[] lastVisited = visited.get(visited.size()-1);
 		//System.out.println( "Last visited: X: " + lastVisited[0] + " Y: " + lastVisited[1]);
 
-		//System.out.println("Iteration: " + iteration + " Depth: "+tempNumMove);
 		int moveX = 0;
 		int moveY = 0;
 		int tempNumMove2;	
@@ -425,7 +423,6 @@ public class TaxiObject {
 		if( (tempNumMove > numMove && numMove!=-1) )
 			return;
 		
-		iteration++;
 		
 		if(!exhaustive){
 			if(  ( depth > searchDepth && enableSearchDepth) )
