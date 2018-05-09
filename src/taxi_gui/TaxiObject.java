@@ -21,8 +21,8 @@ public class TaxiObject {
 	private static int iteration = 0;
 	
 	private boolean enableIterativeDeepening = true; // Much more efficient for small search space
-	
-	private boolean enableSearchDepth = true;
+	private int deepeneningPerIteration = 2;
+	private boolean enableSearchDepth = false;
 	private int searchDepth = 40; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
 								  //Increasing this will increase the time taken to find a route
 	
@@ -99,7 +99,7 @@ public class TaxiObject {
 					calcPath( passenger[0][0][0] , passenger[0][0][1]);
 					
 					while(enableIterativeDeepening && numMove==-1){
-						searchDepth++;
+						searchDepth+=deepeneningPerIteration;
 						calcPath( passenger[0][0][0] , passenger[0][0][1]);
 					}
 					if(!enableIterativeDeepening && numMove==-1)
@@ -148,7 +148,7 @@ public class TaxiObject {
 					calcPath( passenger[0][1][0] , passenger[0][1][1]);
 					
 					while(enableIterativeDeepening && numMove==-1){
-						searchDepth++;
+						searchDepth+=deepeneningPerIteration;
 						calcPath( passenger[0][1][0] , passenger[0][1][1]);
 					}
 					if(!enableIterativeDeepening && numMove==-1)
