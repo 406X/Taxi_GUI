@@ -213,7 +213,7 @@ public class TaxiObject {
 			return;
 		
 		if(!exhaustive){
-			if(  ( tempNumMove > searchDepth && enableSearchDepth) )
+			if(  ( depth > searchDepth && enableSearchDepth) )
 				return;
 		}
 		else if(enableIterativeDeepening){
