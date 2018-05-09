@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class TaxiObject {
 	private ArrayList<Integer[]> arrList = new ArrayList();
+	private int numTaxi = 0;
 	private int maxPassenger = 1;
 	private int numPassenger = 0;
 	private static Log log = new Log();
@@ -11,6 +12,7 @@ public class TaxiObject {
 	private static int time = 0;
 	private int weight = 1;
 	private int ID;
+	private int maxBlocks = 4;
 	private int boxes = 0;
 	private int[][] bWeight;
 	private int[][] obstacle;
@@ -47,10 +49,11 @@ public class TaxiObject {
 	
 	private static PassengerList passengerList;
 	
-	public TaxiObject(int maxPassenger, int x , int y,Log log,int id, int boxes){
+	public TaxiObject(int maxPassenger, int x , int y,Log log,int id, int boxes, int maxBlocks){
 		this.log = log;
 		this.ID = id;
 		this.boxes = boxes;
+		this.maxBlocks = maxBlocks;
 		log.writelog("["+ time + "]" + " Taxi " + ID +  " started");
 		if(id==1){
 			passengerList = new PassengerList(maxPassenger);
@@ -60,6 +63,7 @@ public class TaxiObject {
 		passengerStatus = new int[maxPassenger];
 		this.x = x;
 		this.y = y;
+		numTaxi++;
 	}
 	
 	public void addPassenger(int[][] passenger){
@@ -177,6 +181,7 @@ public class TaxiObject {
 		iteration = 1;
 		ArrayList<Integer[]> tempList = new ArrayList();
 		ArrayList<Integer[]> visited = new ArrayList();
+		ArrayList<Integer[]> queue = new ArrayList();
 		int tempNumMove = 0;
 		int tempNumMove2;
 		int currentX = x;
@@ -198,7 +203,7 @@ public class TaxiObject {
 		moveX = 1;
 		moveY = 0;
 		
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1) &&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 = tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -227,6 +232,7 @@ public class TaxiObject {
 					ArrayList temp = copyArrList(tempList);
 					temp.add(move);
 					tempVisited.add(currentVisit);
+					queue.add(nextVisit);
 					calcPath( temp,tempNumMove2,currentX+move[0],currentY+move[1] ,destX , destY,tempVisited);
 				}
 			}
@@ -234,7 +240,7 @@ public class TaxiObject {
 		
 		moveX = 0;
 		moveY = 1;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0  && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0  && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 =tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -268,7 +274,7 @@ public class TaxiObject {
 		
 		moveX = -1;
 		moveY = 0;
-		if( currentX + moveX <= boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1) ){
+		if( currentX + moveX <= boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 = tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY - 1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -302,7 +308,7 @@ public class TaxiObject {
 		
 		moveX = 0;
 		moveY = -1;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1) ){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 =tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -335,6 +341,35 @@ public class TaxiObject {
 				
 			}
 		}
+	}
+
+		public boolean isBoxFull(int s_x, int s_y,int offset){
+		int countBlock = 0;
+			int[][][] list = getPassengerList().getPassengers();
+			
+			for(int count = 0 ; count < list.length ; count++){
+				if( list[count][2][0] == s_x
+						&& list[count][2][1] == s_y ){
+					countBlock++;
+				}
+			}
+			
+			for(int count = 0 ; count < numTaxi ; count++){
+				list = getPassenger();
+				
+				for(int count2 = 0 ; count2 < list.length ; count2++){
+					if( list[count2][2][0] == s_x
+							&& list[count2][2][1] == s_y ){
+						countBlock++;
+					}
+				}
+				
+			}
+			
+			if(	countBlock < maxBlocks+offset)
+				return false;
+			else
+				return true;
 	}
 	
 	public ArrayList copyArrList( ArrayList arrList){
@@ -377,7 +412,7 @@ public class TaxiObject {
 		
 		moveX = 1;
 		moveY = 0;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 = tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -411,7 +446,7 @@ public class TaxiObject {
 		
 		moveX = 0;
 		moveY = 1;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 =tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -445,7 +480,7 @@ public class TaxiObject {
 		
 		moveX = -1;
 		moveY = 0;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 =tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];
@@ -479,7 +514,7 @@ public class TaxiObject {
 		
 		moveX = 0;
 		moveY = -1;
-		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)){
+		if( currentX + moveX <=boxes  && currentX + moveX >0 && currentY + moveY <=boxes && currentY + moveY >0 && ( obstacle[currentY+moveY-1][currentX+moveX-1]!=1)&&!(isBoxFull(currentX+moveX,currentY+moveY,0)&&numPassenger>0)){
 			tempNumMove2 =tempNumMove + bWeight[ currentX + moveX - 1][ currentY + moveY -1];
 			if( (currentX + moveX == destX && currentY+moveY == destY && numMove == -1) || ( currentX + moveX == destX && currentY+moveY == destY && tempNumMove2 < numMove)){
 				Integer[] move = new Integer[2];

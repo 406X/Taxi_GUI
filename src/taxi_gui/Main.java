@@ -36,8 +36,7 @@ public class Main extends Application {
 	private int taxiSize = 1;
 	private int canvasWidth = winWidth - 50;
 	private int canvasHeight = winHeight/2;
-	private int numBlocks = 9; // Must be square number
-	private int maxBlocks = numBlocks - taxiSize;
+	private int maxBlocks = 4; // Must be square number
 	private double sqrWidth = canvasWidth/boxes;
 	private double sqrHeight = canvasHeight/boxes;
 	private int numTaxi = 0;
@@ -47,7 +46,7 @@ public class Main extends Application {
 	private int[][] blockWeight;
 	private static int time = 0;
 	private int[][] obstacle = new int[boxes][boxes];
-	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,numBlocks,maxTaxi);
+	Taxi Taxii = new Taxi(maxPassenger,taxiSize,boxes,maxBlocks,maxTaxi);
 	Color[] colorPassenger = new Color[10];
 	Canvas canvas = new mainCanvas(canvasWidth,canvasHeight);
 	GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -134,9 +133,9 @@ public class Main extends Application {
 		*/
 		
 		//Test Variables
-		Taxii.generateRandomObstacles(numBlocks);
+		Taxii.generateRandomObstacles(maxBlocks);
 		addTaxi();
-		Taxii.generateRandomWeights(numBlocks*2,3);
+		Taxii.generateRandomWeights(maxBlocks*2,3);
 		
 		//Fetch data from backend
 		list = Taxii.getPassengerCoords();
@@ -159,8 +158,7 @@ public class Main extends Application {
 		
 		//Loop
 		Timeline timeline = new Timeline(
-				new KeyFrame(Duration.seconds(1), e -> {
-						maxBlocks = numBlocks - taxiSize*Taxii.getNumTaxi();
+				new KeyFrame(Duration.seconds(0.5), e -> {
 						gc.setFill( Color.LIGHTSTEELBLUE);
 						gc.fillRect(0, 0, canvasWidth, canvasHeight);
 						Taxii.move();	
@@ -230,6 +228,7 @@ public class Main extends Application {
 		);
 		*/
 		
+		
 	}//End of start
 	
 	
@@ -238,7 +237,7 @@ public class Main extends Application {
 	}
 	
 	public void addPassenger(int x_src,int y_src,int x_dest,int y_dest){
-		if(numPassenger<maxPassenger && obstacle[y_src-1][x_src-1]!=1){
+		if(numPassenger<maxPassenger && obstacle[y_src-1][x_src-1]!=1 && x_src > 0 && x_src <= boxes && y_src > 0 && y_src <= boxes && x_dest > 0 && x_dest <= boxes&& y_dest > 0 && y_dest <= boxes){
 			Taxii.add(x_src, y_src, x_dest, y_dest);
 			numPassenger = Taxii.getNumPassenger();
 		}
@@ -264,7 +263,7 @@ public class Main extends Application {
 	
 	
 	public void drawBlocks(){
-		double size = Math.sqrt(numBlocks);
+		double size = Math.sqrt(maxBlocks);
 		gc.setFill(Color.AQUAMARINE);
 		int[][] countBlock = new int[boxes][boxes];
 		for(int count = 0 ;count < numPassenger ; count++){
@@ -297,7 +296,7 @@ public class Main extends Application {
 		blockX--;
 		blockY--;
 		
-		double size = Math.sqrt(numBlocks);
+		double size = Math.sqrt(maxBlocks);
 		
 		return sqrWidth*blockX + sqrWidth*(countBlock[blockX][blockY]%size)/size;
 	}
@@ -306,14 +305,14 @@ public class Main extends Application {
 		blockX--;
 		blockY--;
 		
-		double size = Math.sqrt(numBlocks);
+		double size = Math.sqrt(maxBlocks);
 		
 		return sqrHeight*blockY + sqrHeight*((int)((countBlock[blockX][blockY])/size))/size;
 	}
 	
 	
 	public void drawObstacle(){
-		double size = Math.sqrt(numBlocks);
+		double size = Math.sqrt(maxBlocks);
 		gc.setFill(Color.GRAY);
 		for(int count = 0 , x = 0 , y = 0 ; count<boxes ; count++, y+=sqrHeight, x = 0){
 			for(int count2 = 0 ; count2 < boxes ; count2++, x+=sqrWidth){
