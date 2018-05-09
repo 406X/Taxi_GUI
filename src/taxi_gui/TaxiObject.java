@@ -20,15 +20,11 @@ public class TaxiObject {
 	private int initialDepth = boxes;
 	private static int iteration = 0;
 	
-	private boolean enableIterativeDeepening = true;
+	private boolean enableIterativeDeepening = true; // Much more efficient for small search space
 	
 	private boolean enableSearchDepth = true;
 	private int searchDepth = 40; //Increase this when increasing the number of boxes (At least 2.5*boxes is recommended)
 								  //Increasing this will increase the time taken to find a route
-	
-	private boolean enableIterationThreshold = false;
-	private int iterationThreshold = 40000; //Increase this to get better routes
-
 	
 	private boolean exhaustive = true; //If set to true, the algorithm will search everything and ignore searchDepth and iterationThreshold
 									   //Thus increasing search time tremendously
@@ -217,7 +213,7 @@ public class TaxiObject {
 			return;
 		
 		if(!exhaustive){
-			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( tempNumMove > searchDepth && enableSearchDepth) )
+			if(  ( tempNumMove > searchDepth && enableSearchDepth) )
 				return;
 		}
 		else if(enableIterativeDeepening){
@@ -431,7 +427,7 @@ public class TaxiObject {
 		iteration++;
 		
 		if(!exhaustive){
-			if( ( iteration>iterationThreshold && numMove!=-1 && enableIterationThreshold) || ( depth > searchDepth && enableSearchDepth) )
+			if(  ( depth > searchDepth && enableSearchDepth) )
 				return;
 		}
 		else if(enableIterativeDeepening){
